@@ -33,15 +33,18 @@ support matrix.
 
 ## Current delivery status
 
-This is a local source port. A new GitHub repository, release, and ready-built
-RHEL 8 payload have **not** been published. Prepare a broad kernel bundle before
-the first site visit with `--all-kernels`; it is bounded by the exact development
-package pairs available in the enabled entitled RHEL 8 repositories at build
-time. It cannot guarantee coverage of every historical, custom, or future
-kernel. Review `SUPPORTED_KERNELS.txt` before transfer. Full build/transaction
-evidence belongs to each generated bundle; target installation and post-reboot
-GPU validation remain pending. The prior RHEL 9 package counts are not RHEL 8
-evidence.
+A completed local bundle was built and independently checked on October 30,
+2026. It contains **104 exact stock RHEL 8.10 kernel development/header pairs**,
+NVIDIA **580.196.07**, and the complete tested driver/build/runtime dependency
+set. The 2.63 GB archive and its SHA-256 are recorded in the
+[verified build receipt](docs/BUILD-RECORD-20261030.md). No new public GitHub
+repository/release or production repository publication was performed.
+
+The target kernel remains unknown. Coverage is bounded by the exact signed
+pairs available in the entitled repositories at build time; it does not cover
+every historical, custom or future kernel. Review `SUPPORTED_KERNELS.txt`.
+Target installation, DKMS compilation, Secure Boot handling and post-reboot GPU
+validation remain site-visit work.
 
 The generated transport bundle has two repositories:
 
@@ -61,10 +64,12 @@ solve did not prove the driver runtime dependencies were complete. Independent n
 594 Red Hat/EPEL RPMs resolved the full driver/toolchain and latest carried
 kernel pair as a 410-package, approximately 666 MiB transaction in an empty
 installroot. The preview aborted with zero RPMs installed and no third
-repository. The final automated artifact must still carry its own successful
-`OFFLINE_INSTALL_PREVIEW.txt`; an archive/checksum is not claimed here. The revised builder
-withholds its completion manifest/archive until that fresh paired-only preview
-passes; inspect `OFFLINE_INSTALL_PREVIEW.txt` and `RUNTIME_DEPENDENCIES.tsv`.
+repository. The completed artifact also passed its own automated
+`OFFLINE_INSTALL_PREVIEW.txt` gate and a separate RPM transaction test with
+signatures and file-conflict checks enabled; zero application RPMs were
+installed. The archive and all 654 per-file checksums passed after transfer.
+The builder withholds its completion manifest/archive until the paired-only
+preview passes; inspect that receipt and `RUNTIME_DEPENDENCIES.tsv`.
 The automatic preview uses the latest carried kernel pair; it does not prove
 DKMS or solver execution for all 104 alternatives.
 
@@ -206,6 +211,8 @@ acceptance also requires service, module, journal, and versionlock checks in
 
 ## Documentation
 
+- [Verified October 30 build and SHA-256](docs/BUILD-RECORD-20261030.md)
+- [USB/local-repository quickstart](docs/ON-SITE-QUICKSTART.md)
 - [Installation, transfer, validation, and rollback](docs/INSTALL.md)
 - [Self-contained context for an offline assistant](docs/LLM-CONTEXT.md)
 - [Required package manifest and closure boundary](PACKAGE-MANIFEST.md)
