@@ -21,11 +21,12 @@ An optional `--kernel` asserts a previously recorded approved value.
 For a smaller known-target build, use `--target-kernel` with the GPU target's
 recorded `uname -r`. The staging host's kernel never identifies the GPU target.
 
-This local port has no new published GitHub release or ready-built RHEL 8
-payload. Validate each generated build using its actual manifest, signatures,
-coverage list, and paired-repository transaction evidence. Target DKMS build
-and post-reboot GPU validation remain pending. The RHEL 9 release's package
-counts, kernel, and verification record do not apply.
+The verified October 30 kit contains 104 exact kernel pairs and 617 signed
+RPMs. Download the complete [GitHub Release](https://github.com/BenjaminSisko/nvidia-r580-rhel8-airgap/releases/tag/v2026.10.30-r580.196.07)
+using [the split-archive guide](GITHUB-DOWNLOAD.md), then inspect its actual
+manifest, signatures, coverage list and paired-repository transaction evidence.
+Target DKMS compilation and post-reboot GPU validation remain pending.
+The RHEL 9 release's package counts, kernel and verification record do not apply.
 
 NVIDIA's [R580 support matrix](https://docs.nvidia.com/datacenter/tesla/tesla-release-notes-580-105-08/index.html)
 lists RTX PRO 6000 Blackwell **Server Edition** on RHEL 8.10. The
@@ -36,7 +37,7 @@ similarly named models or for an unconfirmed MATLAB/application release.
 
 This source adaptation comes from `BenjaminSisko/nvidia-r580-rhel9-airgap`
 commit `4d492b8`; the original repository remains unchanged. This separate
-local sibling contains the EL8 port.
+repository contains the EL8 port.
 
 NVIDIA's [580.196.07 module guidance](https://download.nvidia.com/XFree86/Linux-x86_64/580.196.07/README/kernel_open.html)
 requires open modules for Blackwell and later. Its [GPU list](https://download.nvidia.com/XFree86/Linux-x86_64/580.196.07/README/supportedchips.html)

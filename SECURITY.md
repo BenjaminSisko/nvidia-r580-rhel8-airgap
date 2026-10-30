@@ -3,13 +3,15 @@
 ## Payload and source separation
 
 Keep RPM payloads, generated DNF repositories, tarballs, and ISOs outside Git
-history. The local RHEL 8 port has no new published GitHub repository, release,
-or binary artifact. Publish artifacts only through the organization's approved
-process and under the vendors' applicable redistribution and entitlement terms.
+history. Publish binary payloads as reviewed GitHub Release assets, separately
+from source history, through the authorized publication process and under the
+vendors' applicable redistribution and entitlement terms. The complete
+October 30 kit is published as two verified byte parts; download/reassembly
+instructions and per-asset checksums accompany it.
 
 Never include subscription certificates, entitlement private keys, CDN client
 keys, repository credentials, tokens, passwords, SSH or module-signing private
-keys, license files, internal repository URLs, private inventories, or host
+keys, application license credentials, internal repository URLs, private inventories, or host
 logs in a public source or payload release. Public RPM signing keys are
 verification material and are distinct from subscription client credentials.
 Keep target evidence in the approved private change record.
@@ -39,7 +41,9 @@ Independent native paired-only resolution passed for the reviewed 617-RPM
 union and latest carried kernel, producing a 410-package transaction with zero
 RPMs installed. The final artifact must still contain its own successful
 `OFFLINE_INSTALL_PREVIEW.txt` and pass final identity/signature/hash checks;
-this intermediate solver proof is not a target installation or archive receipt.
+the final October 30 archive also passed its own paired-only gate, a signing-key/
+signature/file-conflict RPM transaction test, and all transport checks. Those
+preparation checks are distinct from target installation and GPU acceptance.
 A broad bundle lists package availability in `SUPPORTED_KERNELS.txt`; it does
 not prove successful DKMS compilation or GPU operation on every listed kernel.
 
@@ -92,4 +96,4 @@ must satisfy the target's existing Secure Boot policy before reboot acceptance.
 Report security concerns privately to the repository owner through the
 organization's established channel. Include a minimal sanitized reproduction.
 Do not place secrets or internal environment evidence in public issues or
-assume a GitHub security-reporting feature exists for this local project.
+assume a GitHub security-reporting feature exists unless it is enabled for this repository.

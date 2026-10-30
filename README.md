@@ -4,7 +4,7 @@ This project prepares a driver-only offline DNF bundle for RHEL 8.10 x86_64
 and NVIDIA RTX PRO 6000 Blackwell GPUs. It ports the earlier RHEL 9 workflow
 using NVIDIA's **EL8** RPMs, RHEL 8 dependencies, and EPEL 8. The original
 `BenjaminSisko/nvidia-r580-rhel9-airgap` repository at commit `4d492b8` remains
-unchanged; this is a separate local sibling containing the source adaptation.
+unchanged; this repository contains the separate RHEL 8 adaptation.
 
 | Item | Selection or evidence needed |
 |---|---|
@@ -37,8 +37,11 @@ A completed local bundle was built and independently checked on October 30,
 2026. It contains **104 exact stock RHEL 8.10 kernel development/header pairs**,
 NVIDIA **580.196.07**, and the complete tested driver/build/runtime dependency
 set. The 2.63 GB archive and its SHA-256 are recorded in the
-[verified build receipt](docs/BUILD-RECORD-20261030.md). No new public GitHub
-repository/release or production repository publication was performed.
+[verified build receipt](docs/BUILD-RECORD-20261030.md). Download the complete
+kit from the [GitHub release](https://github.com/BenjaminSisko/nvidia-r580-rhel8-airgap/releases/tag/v2026.10.30-r580.196.07)
+and follow [the download/reassembly guide](docs/GITHUB-DOWNLOAD.md). The archive
+is split into two release assets to fit GitHub's per-file limit. No production
+repository service or GPU target was changed by publication.
 
 The target kernel remains unknown. Coverage is bounded by the exact signed
 pairs available in the entitled repositories at build time; it does not cover
@@ -78,6 +81,24 @@ private signing keys, and private host evidence are outside the payload.
 Driver support does not establish support for a particular MATLAB release or
 other application on RHEL 8.10; the workload and application version remain
 unconfirmed.
+
+## Download the prepared kit
+
+The release contains the complete 617-RPM kit and all 104 exact kernel
+development/header pairs. Download all release assets, then run the supplied
+helper on Linux or macOS:
+
+```bash
+gh release download v2026.10.30-r580.196.07 \
+  --repo BenjaminSisko/nvidia-r580-rhel8-airgap \
+  --dir nvidia-rhel8-download
+cd nvidia-rhel8-download
+bash reassemble-release.sh
+```
+
+See [the full download guide](docs/GITHUB-DOWNLOAD.md) for manual reassembly
+and inner checksums. The automatically generated GitHub source ZIP/TAR
+contains tooling; the release assets contain the binary offline kit.
 
 ## Check upstream metadata
 
@@ -211,6 +232,7 @@ acceptance also requires service, module, journal, and versionlock checks in
 
 ## Documentation
 
+- [Download and reassemble the complete GitHub release](docs/GITHUB-DOWNLOAD.md)
 - [Verified October 30 build and SHA-256](docs/BUILD-RECORD-20261030.md)
 - [USB/local-repository quickstart](docs/ON-SITE-QUICKSTART.md)
 - [Installation, transfer, validation, and rollback](docs/INSTALL.md)

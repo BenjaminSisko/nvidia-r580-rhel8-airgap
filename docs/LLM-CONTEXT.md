@@ -8,14 +8,16 @@ NVIDIA **driver-only** bundle on RHEL 8.10 x86_64. Read this file together with
 actual generated TSV records. Treat current target evidence as authoritative
 when it conflicts with prose. State disagreements and unknowns explicitly.
 
-This is a local port of earlier RHEL 9 tooling. No new GitHub repository,
-release, or completed RHEL 8 binary payload is established. The exact target
-kernel is unknown. Prepare broad coverage with `--all-kernels`; each generated
-bundle still requires its own entitled build and paired-repository closure
-evidence. Prior RHEL 9 release assets and package counts cannot prove this
-EL8 bundle is complete or suitable. The source adaptation comes from
-`BenjaminSisko/nvidia-r580-rhel9-airgap` at commit `4d492b8`; the original
-repository is unchanged.
+This repository ports the earlier RHEL 9 tooling. The verified October 30
+RHEL 8.10 release carries 104 exact development/header alternatives and 617
+signed RPMs. Its complete archive is split into two GitHub Release assets;
+follow `GITHUB-DOWNLOAD.md` and verify the pinned reconstructed archive hash.
+The target kernel is unknown; discover it at the site and require its exact
+carried development package. The actual release passed paired-only dependency
+and RPM transaction tests for the latest carried kernel pair. Other kernels'
+DKMS builds and real GPU operation remain untested. Prior RHEL 9 counts and
+assets are separate evidence. Source predecessor:
+`BenjaminSisko/nvidia-r580-rhel9-airgap` at commit `4d492b8`.
 
 ## Selected inputs and unresolved facts
 
