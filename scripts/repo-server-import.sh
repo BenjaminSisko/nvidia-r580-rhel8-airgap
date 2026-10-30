@@ -57,7 +57,7 @@ trap 'rm -rf -- "$verify_db" "$deps_verify_db"' EXIT
 rpm --dbpath "$verify_db" --initdb
 rpm --dbpath "$verify_db" --import "$SOURCE/NVIDIA-GPG-KEY-D42D0685.pub"
 while IFS= read -r -d '' package; do
-  verify_el8_rpm "$package" \
+  verify_el8_rpm "$package" && verify_driver_only_rpm "$package" \
     || { printf 'ERROR: bundle contains a non-EL8 or unsupported-architecture RPM: %s\n' "$package" >&2; exit 1; }
   result="$(rpm --dbpath "$verify_db" -K "$package")"
   printf '%s\n' "$result"
@@ -73,7 +73,7 @@ rpm --dbpath "$deps_verify_db" --initdb
 rpm --dbpath "$deps_verify_db" --import "$redhat_key" "$epel_key"
 printf 'Verifying Red Hat/EPEL package signatures with isolated vendor trust...\n'
 while IFS= read -r -d '' package; do
-  verify_el8_rpm "$package" \
+  verify_el8_rpm "$package" && verify_driver_only_rpm "$package" \
     || { printf 'ERROR: bundle contains a non-EL8 or unsupported-architecture RPM: %s\n' "$package" >&2; exit 1; }
   result="$(rpm --dbpath "$deps_verify_db" -K "$package")"
   printf '%s\n' "$result"

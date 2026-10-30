@@ -109,8 +109,8 @@ dnf -q repolist --enabled | awk '{print $1}' | grep -Fxq "$DEPS_REPO_ID" \
   || { printf 'ERROR: bundled dependency repository is not enabled: %s\n' "$DEPS_REPO_ID" >&2; exit 1; }
 
 repo_only=(--disablerepo='*' --enablerepo="$REPO_ID")
-deps_only=(--disablerepo='*' --enablerepo="$DEPS_REPO_ID")
-install_repos=(--disablerepo='*' --enablerepo="$REPO_ID" --enablerepo="$DEPS_REPO_ID")
+deps_only=(--disablerepo='*' --enablerepo="$DEPS_REPO_ID" --setopt="$DEPS_REPO_ID.module_hotfixes=true")
+install_repos=(--disablerepo='*' --enablerepo="$REPO_ID" --enablerepo="$DEPS_REPO_ID" --setopt="$DEPS_REPO_ID.module_hotfixes=true")
 for os_repoid in "${OS_REPO_IDS[@]}"; do
   [[ "$os_repoid" =~ ^[a-zA-Z0-9_.:-]+$ ]] \
     || { printf 'ERROR: --os-repoid must be one literal repository ID\n' >&2; exit 2; }
@@ -189,10 +189,10 @@ if [[ "$install_mode" == "dkms" ]]; then
     printf 'This helper does not create or enroll a MOK; verify the site-approved module-signing path before reboot.\n\n' >&2
   fi
 
-  dependencies=(
-    gcc make dkms elfutils-libelf-devel "kernel-headers-${running_kernel}"
-    "kernel-devel-${running_kernel}"
-  )
+  if rpm -q kernel-headers >/dev/null 2>&1; then
+    printf 'Retaining installed kernel-headers; userspace headers need not match the running kernel.\n'
+  fi
+  mapfile -t dependencies < <(dkms_dependency_specs "$running_kernel")
   for dependency in "${dependencies[@]}"; do
     # Require exact kernel development files in the transported repo even when installed.
     if [[ "$dependency" != kernel-devel-* && "$dependency" != kernel-headers-* ]] && rpm -q "$dependency" >/dev/null 2>&1; then

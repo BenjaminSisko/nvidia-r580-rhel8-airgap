@@ -45,9 +45,25 @@ evidence.
 
 The generated transport bundle has two repositories:
 
-- `drivers/`: signed EL8 NVIDIA R580 Open-DKMS and matching userspace RPMs.
-- `os-deps/`: exact target Red Hat kernel development packages and resolved
-  RHEL 8/EPEL 8 prerequisites.
+- `drivers/`: signed EL8 NVIDIA R580 Open-DKMS, matching versioned userspace,
+  and NVIDIA-signed support dependencies such as independently versioned EGL
+  components.
+- `os-deps/`: exact Red Hat kernel development package alternatives, the DKMS
+  toolchain, and the resolved RHEL 8/EPEL 8 runtime dependencies needed by the
+  full driver transaction.
+
+The revised build resolves the full selected driver and toolchain from a fresh
+empty RHEL 8.10 installroot, using only approved entitled RHEL/EPEL sources and
+a temporary official NVIDIA source. It classifies downloaded RPMs by isolated
+vendor signature verification and includes them in the repository pair. This
+addresses a real first-build finding: valid signatures and a passing toolchain
+solve did not prove the driver runtime dependencies were complete. **Acceptance
+of the revised bundle is pending** until a fresh paired-repository-only solve
+passes without an external or assumed site OS repository. The revised builder
+withholds its completion manifest/archive until that fresh paired-only preview
+passes; inspect `OFFLINE_INSTALL_PREVIEW.txt` and `RUNTIME_DEPENDENCIES.tsv`.
+The automatic preview uses the latest carried kernel pair; it does not prove
+DKMS or solver execution for all 104 alternatives.
 
 The CUDA Toolkit, cuDNN, TensorRT, MATLAB, entitlement material, credentials,
 private signing keys, and private host evidence are outside the payload.
@@ -96,7 +112,10 @@ The broad mode discovers available standard EL8.10 kernel-devel versions and
 requires the corresponding kernel-headers package for each included kernel.
 The generated list is the actual scope. It carries development packages for
 alternative kernels, without installing kernel images on the target. At the
-site, the client selects the pair matching its running kernel. A kernel missing
+site, the client requires exact matching `kernel-devel`. It preserves an
+installed compatible RHEL `kernel-headers` package, whose version need not equal
+the running kernel; if headers are absent, it installs the carried matching
+header package. A kernel missing
 from the bundle must be handled by obtaining an exact signed pair or making a
 separate approved OS change; an approximate match is unsafe.
 
@@ -112,6 +131,21 @@ only the paired repositories before accepting the bundle. Broad coverage can
 increase media size substantially; inspect the finished artifact size before
 choosing optical media. Build/transfer success does not prove DKMS or GPU
 operation on every listed kernel.
+
+For a fresh revision that reuses previously downloaded RPMs, supply the old
+`repo-bundle/` directory as a cache while selecting a **new** output directory:
+
+```bash
+sudo env PYTHON_BIN=/usr/bin/python3.9 ./scripts/build-driver-repo.sh \
+  --all-kernels --driver-version 580.196.07 --no-iso \
+  --rpm-cache /path/to/old/repo-bundle \
+  --output "$PWD/dist/rhel8-build-r2"
+```
+
+`--rpm-cache` imports only RPMs, never old repository metadata, manifests or
+completion claims, and reruns identity/signature verification. `--resume` is
+for an incomplete output only; a completed bundle cannot be overlaid or resumed.
+Do not combine the two options. See [the recovery procedure](docs/INSTALL.md#interrupted-build-recovery).
 
 ## Transfer, import, and install
 
@@ -140,7 +174,9 @@ mokutil --sb-state
 ```
 
 The client detects `uname -r` by default and refuses installation when its exact
-development package pair is absent from the dependency repository. For an
+`kernel-devel` is absent from the dependency repository. It retains compatible
+installed RHEL userspace headers; when none are installed, the carried matching
+`kernel-headers` package is used. For an
 additional assertion, pass `--kernel` with a separately recorded approved value.
 Install using the explicit Open-DKMS path:
 
@@ -148,8 +184,9 @@ Install using the explicit Open-DKMS path:
 sudo ./client-install.sh --driver-version 580.196.07 --dkms-fallback
 ```
 
-The explicit flag permits installation of the compiler, exact kernel development
-packages, and DKMS on the target. If Secure Boot is enabled, complete the site's
+The explicit flag permits installation of `gcc`, `gcc-c++`, `make`, the exact
+kernel development package, Python 3.6 components needed by EL8 driver packages,
+and DKMS on the target. If Secure Boot is enabled, complete the site's
 approved module-signing process before rebooting. The scripts do not create
 keys, enroll a MOK, or change Secure Boot. Preserve the selected kernel from the
 installation record and use it as the post-reboot assertion:

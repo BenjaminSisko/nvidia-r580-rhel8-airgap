@@ -13,7 +13,9 @@ Use `--all-kernels` to prepare as many available standard RHEL 8.10 kernel
 development pairs as the enabled entitled sources expose. The generated
 `SUPPORTED_KERNELS.txt` records that bounded coverage; it is not a promise to
 support every historical, custom, or future kernel. The client detects its
-running kernel by default and refuses a missing exact development package pair.
+running kernel by default and requires exact matching `kernel-devel`. It
+retains compatible installed RHEL `kernel-headers`, whose version need not equal
+the running kernel; if absent, it installs the carried matching header.
 An optional `--kernel` asserts a previously recorded approved value.
 
 For a smaller known-target build, use `--target-kernel` with the GPU target's
@@ -72,9 +74,11 @@ TARGET_KERNEL="$(uname -r)"
 printf '%s\n' "$TARGET_KERNEL"
 ```
 
-Compare the recorded kernel with `SUPPORTED_KERNELS.txt` and query the exact
-pair in the offline dependency repository before installation. The client also
-checks exact package availability before changing the host. If the kernel is
+Compare the recorded kernel with `SUPPORTED_KERNELS.txt` and query its exact
+`kernel-devel` in the offline dependency repository before installation. The
+client checks this availability before changing the host. All matching header
+alternatives are transported, but compatible installed RHEL userspace headers
+are preserved rather than forced to the running kernel version. If the kernel is
 missing, obtain its exact signed development pair through a new connected
 build, or make a separate approved OS change to a listed kernel and repeat
 these checks. Do not accept an approximate development package match. Retain
@@ -109,7 +113,9 @@ sudo dnf install -y \
 
 The tooling requires Python 3.9+. Select `/usr/bin/python3.9` through
 `PYTHON_BIN` without replacing RHEL's platform Python. The target client shell
-script does not require Python 3.9. If ISO output is disabled with `--no-iso`,
+script does not require Python 3.9. The transported `python36`/Python 3.6
+components satisfy EL8 driver/package dependencies and are distinct from the
+Python 3.9+ interpreter used by the builder. If ISO output is disabled with `--no-iso`,
 `xorriso` is unnecessary.
 
 For the broad build, the script discovers standard RHEL 8.10 kernel-devel
@@ -168,7 +174,10 @@ sudo env PYTHON_BIN=/usr/bin/python3.9 ./scripts/build-driver-repo.sh \
 ```
 
 Use a clean output directory for each reviewed build. The build stops for
-missing exact driver/kernel packages or failed verification. It preserves
+missing exact driver/kernel packages or failed verification. It resolves the
+full selected driver/toolchain/runtime dependency set from a fresh empty
+installroot with explicit RHEL 8.10 release/platform settings, entitled
+RHEL/EPEL source IDs and a temporary official NVIDIA repository. It preserves
 upstream module metadata for `nvidia-driver:580-open`, verifies RPM signatures,
 generates local repository metadata, then creates transport hashes and media.
 No client installation or repository-service publication happens during build.
@@ -185,6 +194,8 @@ repo-bundle/
 ├── DRIVER_SETS.tsv
 ├── DKMS_FALLBACK_SETS.tsv
 ├── OS_DEPENDENCIES.tsv
+├── RUNTIME_DEPENDENCIES.tsv
+├── OFFLINE_INSTALL_PREVIEW.txt
 ├── SUPPORTED_KERNELS.txt
 ├── MANIFEST.txt
 ├── SHA256SUMS
@@ -218,35 +229,58 @@ column -ts $'\t' "$BUNDLE/DKMS_FALLBACK_SETS.tsv"
 
 Read `SUPPORTED_KERNELS.txt` and confirm each listed exact `kernel-devel` and
 `kernel-headers` pair, EL8 Open-DKMS RPM, matching driver-versioned userspace,
-public keys, and both repositories appear. Alternative development package
-versions are carried for client selection; they are not all installed together.
+public keys, resolved OS runtime dependencies and NVIDIA-signed support
+components such as EGL packages appear in the appropriate repository.
+Inspect `RUNTIME_DEPENDENCIES.tsv` for the destination of each freshly resolved
+runtime RPM and `OFFLINE_INSTALL_PREVIEW.txt` for the actual paired-only solve.
+Alternative development package versions are carried for client selection; they are not all installed together.
 The driver workflow does not provision kernel images.
-NVIDIA's independently versioned DNF plugin is the exception to the driver
-version equality rule. Do not accept `.el9` RPMs.
+NVIDIA's DNF plugin and support components such as EGL packages have
+independent versions; the exact selected driver-profile packages share the
+selected driver version. Do not accept `.el9` RPMs.
 
-## 6. Prove offline transaction closure before transfer
+## 6. Prove full offline transaction closure before transfer
 
-A staging host can already contain libraries that hide missing offline
-packages. The builder's prerequisite download and its availability dry-run do
-not alone prove all NVIDIA userspace and toolchain dependencies are present.
-Require the following acceptance test for the intended OS baseline and kernel
-scope; inclusion in the coverage list proves package availability, not a DKMS
-build on every listed kernel.
+The revised builder includes the full driver/runtime closure as well as the
+DKMS toolchain. It resolves from a fresh empty installroot using explicit
+RHEL 8.10 release/platform settings, approved entitled RHEL/EPEL sources and a
+temporary official NVIDIA source. Additional NVIDIA-signed support RPMs go to
+`drivers/`; Red Hat/EPEL-signed libraries go to `os-deps/`. Signature-based
+classification does not replace the final solver check.
 
-Use a clean, disposable RHEL 8.10 x86_64 VM or equivalent test system whose
-baseline matches the GPU target. Verify and install the public keys through the
-approved process, and configure only the generated `drivers/` and `os-deps/`
-repositories. The following preview tests the full driver package set, with
-one exact kernel pair at a time. It changes the module selection only on the
-disposable test system; `--assumeno` then declines package installation after
-resolution. Set the actual bundle path and one kernel from the coverage list:
+A first signed bundle passed a toolchain-only solve but failed the full driver
+solve because runtime requirements were missing. Do not accept that earlier
+result as offline readiness. **The revised paired-only acceptance remains
+pending until a final receipt records a passing full transaction.** The goal
+is a complete transaction without an external or assumed site OS repository.
+The revised builder itself gates manifest/archive completion on a fresh
+paired-only preview recorded in `OFFLINE_INSTALL_PREVIEW.txt`: it requires a
+resolved `Transaction Summary` and the deliberate `Operation aborted.` result
+from `--assumeno`, with no RPM installation. It also records runtime RPM
+classification in `RUNTIME_DEPENDENCIES.tsv`. The automatic preview selects the
+latest carried kernel pair; this is not a successful DKMS build or an executed
+solver test for every carried kernel. The procedure below allows another exact
+kernel or independent acceptance check.
+
+Use an empty disposable installroot on RHEL 8.10. Its empty RPM database prevents
+libraries installed on staging from hiding omissions. The example below changes
+only disposable module/solver state and deliberately declines package install
+after resolution. Select the actual bundle path and one exact covered kernel:
 
 ```bash
 BUNDLE='/absolute/path/to/repo-bundle'
 TARGET_KERNEL='PASTE_ONE_EXACT_KERNEL_FROM_SUPPORTED_KERNELS'
 DRIVER_VERSION=580.196.07
+TEST_STATE="$(mktemp -d /var/tmp/rhel8-paired-solver.XXXXXXXX)"
+mkdir -p "$TEST_STATE/empty-repos"
 
 TEST_REPOS=(
+  --installroot="$TEST_STATE/root"
+  --releasever=8.10
+  --setopt=module_platform_id=platform:el8
+  --setopt=reposdir="$TEST_STATE/empty-repos"
+  --disableplugin=subscription-manager,nvidia
+  --disableexcludes=all
   --disablerepo='*'
   --repofrompath="rhel8-driver-test,file://${BUNDLE}/drivers"
   --repofrompath="rhel8-deps-test,file://${BUNDLE}/os-deps"
@@ -254,6 +288,7 @@ TEST_REPOS=(
   --enablerepo=rhel8-deps-test
   --setopt=rhel8-driver-test.gpgcheck=1
   --setopt=rhel8-deps-test.gpgcheck=1
+  --setopt=rhel8-deps-test.module_hotfixes=1
 )
 sudo dnf "${TEST_REPOS[@]}" -y module enable nvidia-driver:580-open
 
@@ -269,32 +304,48 @@ for package in "${DRIVER_NAMES[@]}"; do
   SPECS+=("${package}-${DRIVER_VERSION}*")
 done
 SPECS+=(dnf-plugin-nvidia "kernel-devel-${TARGET_KERNEL}"
-  "kernel-headers-${TARGET_KERNEL}" gcc make dkms elfutils-libelf-devel
-  python3-dnf-plugin-versionlock mokutil pciutils)
+  "kernel-headers-${TARGET_KERNEL}" gcc gcc-c++ make python36 /usr/bin/python3.6
+  dkms elfutils-libelf-devel python3-dnf-plugin-versionlock mokutil pciutils)
 
 sudo dnf "${TEST_REPOS[@]}" --assumeno install "${SPECS[@]}"
 ```
 
 An intentional `--assumeno` decline is expected after a complete transaction
-preview; read the output instead of treating its nonzero exit as a resolver
-failure. Confirm the transaction selected the exact intended driver and kernel
-NEVRAs. Test included kernel pairs separately, since kernel-headers alternatives
-are not installed together. Retain the full resolver evidence and baseline
-package list. To exercise actual package scriptlets, run the equivalent
-transaction on a disposable system booted to a selected matching kernel; a
-preview alone cannot prove scriptlet or DKMS behavior.
+preview; inspect the output instead of treating its nonzero exit as a resolver
+failure. Require no unresolved dependencies, no third repository and exact
+intended driver/kernel NEVRAs. Verify RPM signatures separately; this preview
+does not download/install package scriptlets or establish Secure Boot/GPU
+success. Preserve the resolver output and disposable-state location in the
+build record before cleaning only that exact temporary tree.
 
-The client installer itself requires NVIDIA PCI hardware, so a non-GPU VM
-cannot pass its hardware guard. Use the full package-list transaction to test
-that VM's repository closure; do not bypass production guards. Final DKMS,
-Secure Boot loading, and GPU acceptance require the actual target hardware.
+Test included kernel alternatives separately; multiple kernel-headers versions
+are not installed together. In an empty installroot, headers are absent, so the
+example explicitly tests the carried matching header. A real target with a
+compatible RHEL `kernel-headers` already installed retains that package; exact
+`kernel-devel` matching is always mandatory.
 
-If anything is missing, obtain it from the matching entitled RHEL 8/EPEL 8
-source, rebuild the bundle and metadata, repeat signatures/hashes, and retest.
-Do not solve a missing dependency by allowing a third client repository or
-assuming it is installed on every target. Record the clean baseline, exact
-NEVRAs, repository restrictions, transaction output, and final bundle digest.
-Final DKMS and GPU validation still require the actual target hardware.
+To exercise package scriptlets and DKMS, use a disposable matching RHEL 8.10
+system booted to a selected kernel. The client itself requires NVIDIA PCI
+hardware, so a non-GPU VM cannot pass its hardware guard. Test the full package
+transaction on such a VM without bypassing production guards. Final DKMS,
+module signing/loading and GPU acceptance still require the actual target.
+
+If anything is missing, resolve it at connected staging from the explicit
+approved source set, rebuild into a fresh output, reverify and repeat the
+paired-only check. Do not add an unknown client OS repository or assume a
+missing package exists at the site. When approved source content views use
+custom IDs, repeat builder `--source-repoid ID` for each RHEL/EPEL input; its
+defaults are the standard BaseOS, AppStream, CodeReady Linux Builder and EPEL
+IDs. This overrides the connected resolution source list only.
+
+The builder's runtime solve uses `--installroot`, `--releasever=8.10`,
+`--setopt=module_platform_id=platform:el8` and
+`--setopt=reposdir=/etc/yum.repos.d`, then enables only the approved source IDs.
+Its official temporary NVIDIA repository alone receives `module_hotfixes=true`
+for exact resolution. It does not alter the host's persistent repo or module
+configuration. Offline clients instead retain `module_hotfixes=1` on the
+verified dependency repository, because AppStream modular RPMs are transported
+without the full upstream Red Hat module metadata.
 
 ## 7. Verify, burn, and transfer approved media
 
@@ -356,8 +407,11 @@ nvidia-r580-rhel8-os-deps
 
 Keep `gpgcheck=1` and `sslverify=1`. Generated repository metadata is unsigned
 (`repo_gpgcheck=0`); use approved authenticated transport, or implement the
-site's required metadata-signing process before use. Do not enable
-`module_hotfixes` as an unexplained workaround.
+site's required metadata-signing process before use. Keep the documented
+`module_hotfixes=1` scoped to the verified dependency repository so its carried
+AppStream modular runtime RPMs remain usable. The NVIDIA driver repository
+keeps its upstream module metadata; review failures before changing its
+separate module-filtering policy.
 
 Verify both repositories and the selected stream:
 
@@ -384,11 +438,14 @@ dnf --disablerepo='*' --enablerepo=nvidia-r580-rhel8-os-deps \
   repoquery --available "kernel-headers-${TARGET_KERNEL}"
 ```
 
-Compare with the bundle's `SUPPORTED_KERNELS.txt`. If either exact package is
+Compare with the bundle's `SUPPORTED_KERNELS.txt`. If exact `kernel-devel` is
 absent, stop before installation and rebuild for that kernel, or use a
 separately approved OS procedure to install/boot a listed kernel. The driver
-installer does not install a kernel image. Its default is the actual running
-kernel; `--kernel` can additionally assert the recorded chosen value.
+installer does not install a kernel image. Inspect `rpm -q kernel-headers` too:
+retain installed compatible RHEL userspace headers, even when their version
+differs from `uname -r`; if none are installed, require the carried matching
+header. The default is the actual running kernel; `--kernel` can additionally assert
+the recorded chosen value.
 
 If Secure Boot is enabled, establish the approved DKMS module-signing and
 trusted-key path before installation/reboot. These scripts do not create keys,
@@ -418,15 +475,17 @@ sudo ./client-install.sh \
 Confirm the expected count first; replace six if approved target evidence
 differs. The explicit DKMS flag authorizes this script's toolchain path within
 the approved change. The client checks OS/kernel, hardware and repositories,
-selects matching open R580 packages, refuses a missing exact development pair
-before mutation, installs prerequisites, checks exact `kernel-devel`, enables
-persistence, and versionlocks installed kernel package names. Review its proposed transaction and any prompts.
+selects matching open R580 packages and requires exact `kernel-devel` before
+mutation. It preserves compatible installed RHEL userspace headers or installs
+the carried matching header when absent, installs `gcc`, `gcc-c++`, `make`,
+`python36` and other prerequisites, enables persistence, and versionlocks
+installed kernel package names. Review its proposed transaction and prompts.
 
 Before accepting a reboot, collect:
 
 ```bash
 dkms status
-rpm -q "kernel-devel-${TARGET_KERNEL}" "kernel-headers-${TARGET_KERNEL}"
+rpm -q "kernel-devel-${TARGET_KERNEL}" kernel-headers
 modinfo -k "$TARGET_KERNEL" -F version nvidia
 modinfo -k "$TARGET_KERNEL" -F license nvidia
 modinfo -k "$TARGET_KERNEL" -F signer nvidia
@@ -502,3 +561,34 @@ sudo env PYTHON_BIN=/usr/bin/python3.9 ./scripts/build-driver-repo.sh \
 
 The builder checks all cached RPM identities and signatures again. Completed
 bundles cannot be resumed or overlaid; use a new output directory.
+
+
+## Rebuild from an RPM-only cache
+
+To create a revised bundle from a completed predecessor, use a **fresh output**
+and point `--rpm-cache` at the earlier `repo-bundle/` directory:
+
+```bash
+sudo env PYTHON_BIN=/usr/bin/python3.9 ./scripts/build-driver-repo.sh \
+  --all-kernels --driver-version 580.196.07 --no-iso \
+  --rpm-cache /path/to/previous/repo-bundle \
+  --output "$PWD/dist/rhel8-build-r2"
+```
+
+Only `*.rpm` payloads are linked/copied into the new output. Old metadata,
+manifests, hashes and completion markers are not reused. All selected/cached
+RPM identity and vendor-signature checks run again, runtime closure is resolved,
+and metadata/manifests/checksums are regenerated. Do not combine `--rpm-cache`
+with `--resume`, and never delete completion markers to force an overlay.
+
+## Verify Open-DKMS identity without misreading the RPM license header
+
+The official NVIDIA-signed EL8 Open-DKMS RPM reports `NVIDIA License` in its
+umbrella RPM header. That header does not mean its kernel modules are the
+proprietary flavor. Exact package identity, pinned vendor signature, upstream
+open-module membership and post-reboot loaded-module validation establish the
+selected path. Its signed description identifies open-source modules and
+`kernel-open/nvidia/nv.c` contains `SPDX-License-Identifier: MIT`.
+Read-only RPM/source inspection is evidence gathering; no source file needs to
+be installed or executed to inspect that tag. Proprietary `kmod-nvidia` and
+`kmod-nvidia-latest-dkms` remain ineligible for Blackwell.

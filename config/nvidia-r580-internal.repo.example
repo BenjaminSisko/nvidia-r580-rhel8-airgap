@@ -13,7 +13,10 @@ sslverify=1
 # module_hotfixes=1
 
 [nvidia-r580-rhel8-os-deps]
-name=Offline RHEL 8.10 kernel and DKMS dependency repository
+# Verified AppStream modular runtime RPMs are carried without full upstream
+# Red Hat module metadata; scope this override to this dependency repository.
+module_hotfixes=1
+name=Offline RHEL 8.10 kernel, DKMS and full driver runtime dependencies
 baseurl=https://repo.example.mil/repos/nvidia-r580-rhel8/os-deps/
 enabled=1
 gpgcheck=1

@@ -31,8 +31,11 @@ Never bypass a missing key, bad signature, or unexpected fingerprint.
 Independently confirm the provenance of the Red Hat and EPEL keys before
 building and before deploying them. A valid signature establishes which trusted
 key signed an RPM; it does not establish target compatibility or dependency
-closure. This port still needs an entitled full build and an isolated
-paired-repository transaction test for the selected baseline and kernel scope.
+closure. The revised builder includes a fresh empty-installroot driver/runtime
+solve and classifies additional RPMs using isolated NVIDIA or Red Hat/EPEL
+signature trust. Every final bundle must still pass an isolated transaction test
+using only its paired repositories for the selected kernel and full package set.
+That revised acceptance remains pending at this documentation checkpoint.
 A broad bundle lists package availability in `SUPPORTED_KERNELS.txt`; it does
 not prove successful DKMS compilation or GPU operation on every listed kernel.
 
@@ -52,17 +55,28 @@ Do not silently turn off verification or set `sslverify=0`.
 
 - Build using available standard RHEL 8.10 pairs with `--all-kernels`, or a
   recorded explicit `--target-kernel`. Never infer a remote target from staging.
-- On the client, select the running kernel and refuse a missing exact development
-  package pair before installation. Optional `--kernel` asserts an approved
-  value; retain the installation value for post-reboot validation.
+- On the client, require exact `kernel-devel` for the running kernel. Preserve
+  installed compatible RHEL userspace `kernel-headers`; install the carried
+  matching header only when headers are absent. Optional `--kernel` asserts an
+  approved value; retain it for post-reboot validation.
 - Use NVIDIA EL8 packages and the R580 open kernel-module stream. Match all
-  driver-versioned kernel-module and userspace packages exactly.
+  driver-versioned kernel-module and userspace packages exactly. Independent
+  support components such as EGL packages and the DNF plugin retain their own
+  versions and must verify against the correct vendor key.
+- Identify the official Open-DKMS package through its exact name/version/release,
+  pinned vendor signature and upstream module membership, then validate the
+  loaded open module after reboot. The EL8 umbrella RPM header `NVIDIA License`
+  is not evidence of a proprietary kernel module.
 - Use exact Red Hat target kernel development packages from entitled sources.
 - Make DKMS installation explicit with `--dkms-fallback`; the compiler and
   build prerequisites change the target's package baseline.
 - Restrict driver installation and prerequisite resolution to the two approved
   internal repositories. Prove offline dependency closure before acceptance.
 - Retain the kernel versionlocks and use an approved kernel/driver patch cycle.
+- Reuse only RPM files with `--rpm-cache` into a fresh output, rechecking all
+  identities/signatures and regenerating metadata/manifests. Use `--resume` only
+  for incomplete output. Never remove completion markers or copy old metadata
+  to force a completed bundle through a different validation path.
 
 For Secure Boot, use the site's approved signing process and a key trusted by
 the host. These scripts do not disable Secure Boot, create a module-signing

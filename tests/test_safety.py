@@ -36,7 +36,10 @@ class ShellGuards(unittest.TestCase):
           *--provides*) printf 'kmod(nvidia.ko)\\nkernel-modules = %s\\n' "$TARGET" ;;
           *--conflicts*) printf '' ;;
           *'%{RELEASE}|%{ARCH}'*) printf '%s|%s\\n' "$RELEASE" "$ARCH" ;;
-          *) printf '%s|%s|%s\\n' "$NAME" "$VERSION" "$LICENSE" ;;
+          *'%{NAME}|%{VERSION}|%{LICENSE}'*) printf '%s|%s|%s\\n' "$NAME" "$VERSION" "$LICENSE" ;;
+          *'%{NAME}|%{VERSION}'*) printf '%s|%s\\n' "$NAME" "$VERSION" ;;
+          *'%{NAME}'*) printf '%s' "$NAME" ;;
+          *) exit 1 ;;
         esac
     }; '''
 
@@ -133,6 +136,92 @@ class ShellGuards(unittest.TestCase):
             self.assertIn("required" if script.startswith("build") else "stock RHEL 8.10", result.stderr)
 
 
+    def test_dkms_prerequisites_retain_existing_newer_headers(self) -> None:
+        result = self.run_shell('rpm() { return 0; }; dkms_dependency_specs "$TARGET"', TARGET=KERNEL)
+        self.assertEqual(result.returncode, 0)
+        self.assertIn("kernel-devel-" + KERNEL, result.stdout)
+        self.assertNotIn("kernel-headers", result.stdout)
+        self.assertIn("gcc-c++\n", result.stdout)
+        self.assertIn("python36\n", result.stdout)
+
+    def test_dkms_prerequisites_supply_matching_headers_only_when_absent(self) -> None:
+        result = self.run_shell('rpm() { return 1; }; dkms_dependency_specs "$TARGET"', TARGET=KERNEL)
+        self.assertEqual(result.returncode, 0)
+        self.assertIn("kernel-headers-" + KERNEL, result.stdout)
+
+    def test_pinned_nvidia_policy_rejects_newer_family_and_proprietary_modules(self) -> None:
+        for name, version, allowed in (("nvidia-driver", DRIVER, True), ("nvidia-driver", "595.112.07", False),
+                                       ("kmod-nvidia", DRIVER, False), ("kmod-nvidia-latest-dkms", DRIVER, False),
+                                       ("egl-wayland2", "1.0.2", True), ("libvdpau", "1.5", True)):
+            with self.subTest(name=name, version=version):
+                result = self.run_shell(self.RPM_STUB + 'verify_pinned_nvidia_rpm sample.rpm "$DRIVER"',
+                                        NAME=name, VERSION=version, DRIVER=DRIVER)
+                self.assertEqual(result.returncode == 0, allowed)
+
+    def test_driver_only_policy_refuses_toolkits_and_compute_libraries(self) -> None:
+        for name, allowed in (("cuda-toolkit-12-8", False), ("cuda-compat-12-7", False),
+                              ("libcublas12", False), ("nsight-compute", False),
+                              ("nvidia-driver-cuda", True), ("egl-gbm", True)):
+            with self.subTest(name=name):
+                result = self.run_shell(self.RPM_STUB + 'verify_driver_only_rpm sample.rpm', NAME=name)
+                self.assertEqual(result.returncode == 0, allowed)
+
+    def test_rpm_cache_copies_only_rpm_files_without_prior_manifests(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            cache, bundle = root / "old", root / "new"
+            for section in ("drivers", "os-deps"):
+                (cache / section).mkdir(parents=True)
+                (cache / section / "package.rpm").write_bytes(b"vendor-rpm-fixture")
+                (cache / section / "repodata").mkdir()
+                (cache / section / "repodata" / "repomd.xml").write_text("old metadata")
+            (cache / "MANIFEST.txt").write_text("complete immutable original")
+            result = self.run_shell('seed_rpm_cache "$CACHE" "$BUNDLE"', CACHE=str(cache), BUNDLE=str(bundle))
+            self.assertEqual(result.returncode, 0, result.stderr)
+            self.assertEqual(sorted(str(path.relative_to(bundle)) for path in bundle.rglob("*") if path.is_file()),
+                             ["drivers/package.rpm", "os-deps/package.rpm"])
+            self.assertEqual((cache / "MANIFEST.txt").read_text(), "complete immutable original")
+            self.assertEqual((cache / "drivers" / "package.rpm").stat().st_ino,
+                             (bundle / "drivers" / "package.rpm").stat().st_ino)
+
+    def test_runtime_classification_uses_isolated_vendor_signatures(self) -> None:
+        metadata_stub = self.RPM_STUB.replace("rpm() {", "rpm_metadata() {", 1)
+        wrapper = metadata_stub + '''rpm() {
+          if [[ "$*" == *" -K "* ]]; then
+            if [[ "$*" == *"--dbpath $SIGNER -K "* ]]; then
+              printf 'digests signatures OK'; return 0
+            fi
+            printf 'digests SIGNATURES NOT OK'; return 1
+          fi
+          rpm_metadata "$@"
+        }; '''
+        for signer, name, version, section in (("nvidia", "egl-gbm", "1.1.4", "drivers"),
+                                               ("os", "gcc", "8.5.0", "os-deps"),
+                                               ("unknown", "gcc", "8.5.0", None)):
+            with self.subTest(signer=signer), tempfile.TemporaryDirectory() as directory:
+                root = Path(directory)
+                package, bundle = root / "package.rpm", root / "bundle"
+                package.write_bytes(b"rpm fixture")
+                result = self.run_shell(wrapper + 'classify_runtime_rpm "$PACKAGE" nvidia os "$BUNDLE" "$DRIVER"',
+                                        NAME=name, VERSION=version, RELEASE="1.el8", ARCH="x86_64", SIGNER=signer,
+                                        PACKAGE=str(package), BUNDLE=str(bundle), DRIVER=DRIVER)
+                self.assertEqual(result.returncode == 0, section is not None, result.stderr)
+                if section:
+                    self.assertTrue((bundle / section / package.name).is_file())
+                else:
+                    self.assertFalse(bundle.exists())
+
+    def test_offline_preview_requires_a_resolved_transaction(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            log = Path(directory) / "preview.txt"
+            for content, allowed in (("Transaction Summary\nOperation aborted.\n", True),
+                                     ("Error: package dependency is unavailable\nOperation aborted.\n", False),
+                                     ("Transaction Summary\n", False)):
+                log.write_text(content)
+                result = self.run_shell('offline_preview_passed "$LOG"', LOG=str(log))
+                self.assertEqual(result.returncode == 0, allowed)
+
+
 class BuilderReplay(unittest.TestCase):
     """Run real builder control flow with only host/network/DNF prerequisites stubbed."""
 
@@ -177,7 +266,7 @@ case "$*" in
       case "$package_spec" in
         kernel-devel-*) printf 'kernel-devel|%s\\n' "${package_spec#kernel-devel-}" ;;
         kernel-headers-*) printf 'kernel-headers|%s\\n' "${package_spec#kernel-headers-}" ;;
-        gcc|make|dkms|elfutils-libelf-devel|python3-dnf-plugin-versionlock|mokutil|pciutils)
+        gcc|gcc-c++|make|python36|dkms|elfutils-libelf-devel|python3-dnf-plugin-versionlock|mokutil|pciutils)
           printf '%s|1.0-1.el8.x86_64\\n' "$package_spec" ;;
       esac
     done ;;

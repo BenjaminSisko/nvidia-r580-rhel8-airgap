@@ -96,3 +96,78 @@ check_bundle_output() {
   fi
   return 0
 }
+
+# kernel-devel must match the running kernel. Headers are a userspace ABI
+# package and are not installonly: retain existing headers, including newer ones.
+dkms_dependency_specs() {
+  local kernel="$1"
+  printf '%s\n' gcc gcc-c++ make dkms elfutils-libelf-devel python36 "kernel-devel-${kernel}"
+  if ! rpm -q kernel-headers >/dev/null 2>&1; then
+    printf '%s\n' "kernel-headers-${kernel}"
+  fi
+}
+
+verify_driver_only_rpm() {
+  local name
+  name="$(rpm -qp --qf '%{NAME}' "$1")" || return 1
+  case "$name" in
+    cuda*|cudnn*|libcudnn*|tensorrt*|libnvinfer*|libcublas*|libcufft*|libcurand*|libcusolver*|libcusparse*|libnpp*|libnvjpeg*|nsight*|nvidia-cuda-toolkit*)
+      printf 'ERROR: driver-only bundle cannot include toolkit/library package %s\n' "$name" >&2
+      return 1 ;;
+  esac
+}
+
+place_rpm() {
+  local source="$1" destination="$2" target
+  [[ -f "$source" && ! -L "$source" && "$source" == *.rpm ]] || return 1
+  mkdir -p -- "$destination" || return 1
+  target="$destination/$(basename -- "$source")"
+  if [[ -e "$target" || -L "$target" ]]; then
+    [[ -f "$target" && ! -L "$target" ]] && cmp -s -- "$source" "$target" \
+      || { printf 'ERROR: cached RPM differs from resolved package: %s\n' "$target" >&2; return 1; }
+  else
+    # Same-filesystem hardlinks avoid another multi-gigabyte copy. No metadata
+    # or manifests are imported; every linked RPM is verified again before use.
+    ln -- "$source" "$target" 2>/dev/null || cp -p -- "$source" "$target" || return 1
+  fi
+}
+
+seed_rpm_cache() {
+  local cache="$1" bundle="$2" section package
+  [[ -d "$cache/drivers" && -d "$cache/os-deps" ]] \
+    || { printf 'ERROR: --rpm-cache must contain drivers/ and os-deps/\n' >&2; return 1; }
+  for section in drivers os-deps; do
+    while IFS= read -r -d '' package; do
+      place_rpm "$package" "$bundle/$section" || return 1
+    done < <(find "$cache/$section" -maxdepth 1 -type f -name '*.rpm' -print0)
+  done
+}
+
+classify_runtime_rpm() {
+  local package="$1" nvidia_db="$2" os_db="$3" bundle="$4" wanted="$5" result
+  verify_el8_rpm "$package" && verify_driver_only_rpm "$package" || return 1
+  if result="$(LC_ALL=C rpm --dbpath "$nvidia_db" -K "$package" 2>&1)" && [[ "$result" == *"signatures OK"* ]]; then
+    verify_pinned_nvidia_rpm "$package" "$wanted" && place_rpm "$package" "$bundle/drivers" || return 1
+  elif result="$(LC_ALL=C rpm --dbpath "$os_db" -K "$package" 2>&1)" && [[ "$result" == *"signatures OK"* ]]; then
+    place_rpm "$package" "$bundle/os-deps" || return 1
+  else
+    printf 'ERROR: runtime RPM is not signed by a pinned NVIDIA/Red Hat/EPEL trust key: %s\n' "$package" >&2
+    return 1
+  fi
+}
+
+verify_pinned_nvidia_rpm() {
+  local package="$1" wanted="$2" name version
+  IFS='|' read -r name version < <(rpm -qp --qf '%{NAME}|%{VERSION}\n' "$package")
+  case "$name" in
+    kmod-nvidia-open-dkms|libnvidia-cfg|libnvidia-fbc|libnvidia-gpucomp|libnvidia-ml|nvidia-driver|nvidia-driver-cuda|nvidia-driver-cuda-libs|nvidia-driver-libs|nvidia-kmod-common|nvidia-libXNVCtrl|nvidia-libXNVCtrl-devel|nvidia-modprobe|nvidia-persistenced|nvidia-settings|nvidia-xconfig|xorg-x11-nvidia)
+      [[ "$version" == "$wanted" ]] \
+        || { printf 'ERROR: NVIDIA driver family must remain pinned to %s: %s %s\n' "$wanted" "$name" "$version" >&2; return 1; } ;;
+    dnf-plugin-nvidia|egl-gbm|egl-wayland|egl-wayland2|egl-x11|libvdpau) return 0 ;;
+    *) printf 'ERROR: unexpected NVIDIA package outside reviewed driver/support set: %s\n' "$name" >&2; return 1 ;;
+  esac
+}
+
+offline_preview_passed() {
+  grep -Fxq 'Transaction Summary' "$1" && grep -Fq 'Operation aborted.' "$1"
+}
