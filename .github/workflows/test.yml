@@ -9,7 +9,9 @@ permissions:
 
 jobs:
   tests:
-    runs-on: ubuntu-latest
+    # Python 3.9 is available for 22.04; ubuntu-latest can move to a release
+    # without a supported 3.9 build, preventing the minimum-version test.
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
