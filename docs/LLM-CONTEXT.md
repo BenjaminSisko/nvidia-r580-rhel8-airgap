@@ -350,3 +350,21 @@ prerequisites together, verify DKMS and signing, reboot, validate all GPUs,
 and relock. A retained old kernel is only an OS rollback unless its compatible
 NVIDIA module and signing were separately verified. Preserve logs and use the
 approved rollback procedure on failure.
+
+## EL8 RPM header licensing and interrupted builds
+
+The official signed `kmod-nvidia-open-dkms-580.196.07-1.el8.noarch.rpm`
+reports `NVIDIA License` in its RPM header. That field describes the package
+and must not be used as the kernel-module flavor test. Its signed description
+identifies open-source modules, and the transported source file
+`/usr/src/nvidia-580.196.07/kernel-open/nvidia/nv.c` carries an MIT SPDX tag.
+Use the exact open package name/version/release, pinned vendor trust, upstream
+module membership, and the loaded Open Kernel Module validation together.
+The proprietary `kmod-nvidia` and `kmod-nvidia-latest-dkms` packages remain
+ineligible for Blackwell.
+
+An interrupted payload build may be retried with `--resume` and the same
+`--output` only while the output is incomplete. The option retains downloaded
+RPMs but reruns identity and signature verification. A completed bundle with
+`MANIFEST.txt` or `SHA256SUMS` is immutable to this option; select a fresh output
+for another completed build. Never delete completion markers to force a retry.

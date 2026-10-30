@@ -488,3 +488,17 @@ promise GPU operation from a kernel retained solely for OS recovery. On
 failure, preserve DKMS logs, the DNF history, module signer information, and the
 kernel journal; execute the site's approved rollback rather than layering a
 `.run` driver over the RPM installation.
+
+## Interrupted build recovery
+
+If a build stopped before it wrote `MANIFEST.txt` or `SHA256SUMS`, retain the
+downloaded packages and rerun the same broad build with an explicit resume:
+
+```bash
+sudo env PYTHON_BIN=/usr/bin/python3.9 ./scripts/build-driver-repo.sh \
+  --all-kernels --driver-version 580.196.07 \
+  --output "$PWD/dist/rhel8-build" --resume
+```
+
+The builder checks all cached RPM identities and signatures again. Completed
+bundles cannot be resumed or overlaid; use a new output directory.

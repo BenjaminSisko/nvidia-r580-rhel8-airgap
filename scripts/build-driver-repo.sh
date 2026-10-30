@@ -25,6 +25,7 @@ TARGET_KERNELS=()
 DRIVER_VERSION="$DEFAULT_DRIVER_VERSION"
 DRY_RUN=0
 METADATA_ONLY=0
+RESUME=0
 MAKE_ISO=1
 STATUS_SOURCE=""
 INDEX_SOURCE=""
@@ -51,6 +52,7 @@ Options:
   --repo-index FILE     Saved NVIDIA RHEL 8.10 repository index (test/replay)
   --modules-yaml FILE   Saved upstream modules.yaml[.gz] (test/replay)
   --no-iso              Produce the repository directory/tar only
+  --resume              Reuse an incomplete output only; rerun all verification
   --dry-run             Check NVIDIA metadata and entitled DNF dependencies; download no RPMs
   --metadata-only       Check NVIDIA selection only; no kernel, DNF or RPM tool required
   --log FILE            Log path (default: OUTPUT/build.log)
@@ -72,6 +74,7 @@ while (($#)); do
     --repo-index) INDEX_SOURCE="$2"; shift 2 ;;
     --modules-yaml) MODULES_SOURCE="$2"; shift 2 ;;
     --no-iso) MAKE_ISO=0; shift ;;
+    --resume) RESUME=1; shift ;;
     --dry-run) DRY_RUN=1; shift ;;
     --metadata-only) METADATA_ONLY=1; shift ;;
     --log) LOG_FILE="$2"; shift 2 ;;
@@ -319,7 +322,8 @@ if ((DRY_RUN)); then
 fi
 
 REPO_ROOT="${OUTPUT_DIR}/repo-bundle"
-[[ ! -e "$REPO_ROOT" ]] || die "output already contains repo-bundle; choose a fresh --output directory to prevent mixed payloads"
+check_bundle_output "$REPO_ROOT" "$RESUME" || exit 1
+if ((RESUME)); then log "Resuming incomplete payload; metadata, identities, and every RPM signature will be checked again."; fi
 DRIVERS_DIR="${REPO_ROOT}/drivers"
 OS_DEPS_DIR="${REPO_ROOT}/os-deps"
 mkdir -p "$DRIVERS_DIR" "$OS_DEPS_DIR" "${REPO_ROOT}/docs"

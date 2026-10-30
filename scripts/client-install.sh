@@ -145,8 +145,12 @@ if [[ -z "$kmod_line" ]]; then
 fi
 
 IFS='|' read -r kmod_name driver_version kmod_nevra kmod_license kmod_release kmod_arch <<< "$kmod_line"
-[[ "$kmod_license" =~ (GPL|MIT) ]] \
-  || { printf 'ERROR: candidate kmod does not carry an open-source license: %s\n' "$kmod_license" >&2; exit 1; }
+# Official signed EL8 open-DKMS RPMs carry the umbrella "NVIDIA License"
+# header; the exact package name/version/EL8 identity above selects that flavor.
+# RPM authenticity is enforced during installation; loaded Open flavor is
+# asserted by --validate after reboot.
+[[ "$kmod_name" == kmod-nvidia-open-dkms || "$kmod_license" =~ (GPL|MIT) ]] \
+  || { printf 'ERROR: candidate is not an identified open kernel-module package: %s\n' "$kmod_name" >&2; exit 1; }
 
 package_names=(
   libnvidia-cfg libnvidia-fbc libnvidia-gpucomp libnvidia-ml nvidia-driver
@@ -225,7 +229,7 @@ if [[ "$install_mode" == "dkms" ]]; then
 fi
 
 dnf -y "${repo_only[@]}" module enable nvidia-driver:580-open
-dnf -y "${install_repos[@]}" install "${packages[@]}"
+dnf -y --setopt=gpgcheck=1 "${install_repos[@]}" install "${packages[@]}"
 systemctl enable nvidia-persistenced.service
 
 if ! dnf -q versionlock list >/dev/null 2>&1; then

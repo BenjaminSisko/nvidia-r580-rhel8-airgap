@@ -53,9 +53,29 @@ class ShellGuards(unittest.TestCase):
 
     def test_header_rejects_each_early_mismatch_even_in_conditional_context(self) -> None:
         for bad in (dict(NAME="kmod-nvidia-latest-dkms"), dict(VERSION="580.178.04"),
-                    dict(LICENSE="Nvidia"), dict(RELEASE="1.el9"), dict(ARCH="aarch64")):
+                    dict(RELEASE="1.el9"), dict(ARCH="aarch64")):
             with self.subTest(bad=bad):
                 self.assertNotEqual(self.header_result(**bad).returncode, 0)
+
+    def test_official_open_dkms_nvidia_license_header_is_accepted(self) -> None:
+        self.assertEqual(self.header_result(LICENSE="NVIDIA License").returncode, 0)
+        self.assertNotEqual(self.header_result(NAME="kmod-nvidia-latest-dkms", LICENSE="NVIDIA License").returncode, 0)
+
+    def test_resume_requires_explicit_flag_and_incomplete_output(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            bundle = Path(directory) / "repo-bundle"
+            check = 'check_bundle_output "$BUNDLE" "$RESUME"'
+            self.assertEqual(self.run_shell(check, BUNDLE=str(bundle), RESUME="0").returncode, 0)
+            self.assertNotEqual(self.run_shell(check, BUNDLE=str(bundle), RESUME="1").returncode, 0)
+            bundle.mkdir()
+            self.assertNotEqual(self.run_shell(check, BUNDLE=str(bundle), RESUME="0").returncode, 0)
+            self.assertEqual(self.run_shell(check, BUNDLE=str(bundle), RESUME="1").returncode, 0)
+            for marker in ("MANIFEST.txt", "SHA256SUMS"):
+                path = bundle / marker
+                path.touch()
+                for resume in ("0", "1"):
+                    self.assertNotEqual(self.run_shell(check, BUNDLE=str(bundle), RESUME=resume).returncode, 0)
+                path.unlink()
 
     def test_el8_appstream_modular_and_standard_release_tags_are_accepted(self) -> None:
         for release in ("422.module+el8.10.0+21673+5ce1591e", "1.module+el8.6.0+14238+f4e0b588",

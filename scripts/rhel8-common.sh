@@ -38,7 +38,13 @@ verify_el8_rpm() {
 verify_open_dkms() {
   local path="$1" driver="$2" name version license
   IFS='|' read -r name version license < <(rpm -qp --qf '%{NAME}|%{VERSION}|%{LICENSE}\n' "$path")
-  [[ "$name" == kmod-nvidia-open-dkms && "$version" == "$driver" && "$license" =~ (GPL|MIT) ]] \
+  # Official EL8 open-DKMS RPMs use the umbrella "NVIDIA License" header.
+  # Native inspection of official 580.196.07 found kernel-open/nvidia/nv.c
+  # with SPDX-License-Identifier: MIT despite that umbrella RPM license header.
+  # Flavor comes from the exact vendor package identity, never that header.
+  # The builder/importer separately require its valid NVIDIA RPM signature;
+  # postreboot validation proves that the loaded module identifies as Open.
+  [[ "$name" == kmod-nvidia-open-dkms && "$version" == "$driver" ]] \
     && verify_el8_rpm "$path"
 }
 
@@ -71,4 +77,22 @@ validate_gpu_state() {
   count="$(nvidia-smi --query-gpu=index --format=csv,noheader | wc -l)" || return 1
   [[ "$count" -eq "$expected_gpus" ]] \
     || { printf 'ERROR: expected %s GPUs; nvidia-smi found %s\n' "$expected_gpus" "$count" >&2; return 1; }
+}
+
+
+check_bundle_output() {
+  local bundle="$1" resume="$2"
+  if [[ -e "$bundle" || -L "$bundle" ]]; then
+    [[ -d "$bundle" && ! -L "$bundle" ]] \
+      || { printf 'ERROR: existing repo-bundle must be a regular directory\n' >&2; return 1; }
+    [[ ! -e "$bundle/MANIFEST.txt" && ! -L "$bundle/MANIFEST.txt" \
+       && ! -e "$bundle/SHA256SUMS" && ! -L "$bundle/SHA256SUMS" ]] \
+      || { printf 'ERROR: completed/manifested bundles cannot be resumed; choose a fresh --output\n' >&2; return 1; }
+    ((resume == 1)) \
+      || { printf 'ERROR: output contains an incomplete repo-bundle; inspect it and use --resume explicitly, or choose a fresh --output\n' >&2; return 1; }
+  elif ((resume)); then
+    printf 'ERROR: --resume requires an existing incomplete repo-bundle\n' >&2
+    return 1
+  fi
+  return 0
 }
