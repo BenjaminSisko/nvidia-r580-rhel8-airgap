@@ -250,9 +250,20 @@ classification does not replace the final solver check.
 
 A first signed bundle passed a toolchain-only solve but failed the full driver
 solve because runtime requirements were missing. Do not accept that earlier
-result as offline readiness. **The revised paired-only acceptance remains
-pending until a final receipt records a passing full transaction.** The goal
-is a complete transaction without an external or assumed site OS repository.
+result as offline readiness. An independent native RHEL 8.10 check has now passed using the reviewed union
+of **23 NVIDIA-signed RPMs and 594 Red Hat/EPEL-signed RPMs (617 total)**. With
+only two generated local repositories and a fresh empty installroot, the full
+pinned driver profile, `gcc`/`gcc-c++`/`python36`/DKMS toolchain and
+`4.18.0-553.180.1.el8_10.x86_64` development/header pair resolved a **410-package,
+approximately 666 MiB transaction**. `--assumeno` deliberately aborted it;
+**zero RPMs were installed**. This proves that reviewed union's package
+resolution for the selected kernel, not DKMS, Secure Boot or real GPU operation.
+The final automated bundle must still include its own passing
+`OFFLINE_INSTALL_PREVIEW.txt`; no archive completion or checksum is asserted by
+this intermediate proof.
+
+The goal is a complete transaction without an external or assumed site OS
+repository.
 The revised builder itself gates manifest/archive completion on a fresh
 paired-only preview recorded in `OFFLINE_INSTALL_PREVIEW.txt`: it requires a
 resolved `Transaction Summary` and the deliberate `Operation aborted.` result

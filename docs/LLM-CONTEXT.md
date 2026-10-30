@@ -131,12 +131,17 @@ EGL components, go to `drivers/`; Red Hat/EPEL-signed dependencies go to
 `os-deps/` after isolated vendor-signature verification.
 
 The paired repositories are intended to supply the complete driver/toolchain
-transaction without an external or assumed site OS repository. **Do not claim
-this acceptance passed without its actual receipt.** A first signed 505-RPM
+transaction without an external or assumed site OS repository. A first signed 505-RPM
 bundle passed a 281-package toolchain-only solve but its full driver solve
 reported 32 unique missing requirements. The revised runtime-closure build
-addresses that gap; its final paired-only solve is still pending at this
-checkpoint. File counts, valid signatures and a passing seed/toolchain query
+addresses that gap. Independent native paired-only resolution has now passed
+for a reviewed union of 23 NVIDIA and 594 Red Hat/EPEL RPMs (617 total). A fresh
+empty installroot with only two generated local repositories resolved the full
+pinned driver, toolchain (`gcc`, `gcc-c++`, `python36`, DKMS) and latest carried
+`4.18.0-553.180.1.el8_10.x86_64` pair: 410 packages, approximately 666 MiB.
+The intentional `--assumeno` abort left zero RPMs installed. The final automated
+artifact must still include its own passing `OFFLINE_INSTALL_PREVIEW.txt` and
+final manifest/signature/hash checks; no archive completion is asserted here. File counts, valid signatures and a passing seed/toolchain query
 are insufficient.
 
 Required acceptance is a fresh empty-installroot solve using only final

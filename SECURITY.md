@@ -35,7 +35,11 @@ closure. The revised builder includes a fresh empty-installroot driver/runtime
 solve and classifies additional RPMs using isolated NVIDIA or Red Hat/EPEL
 signature trust. Every final bundle must still pass an isolated transaction test
 using only its paired repositories for the selected kernel and full package set.
-That revised acceptance remains pending at this documentation checkpoint.
+Independent native paired-only resolution passed for the reviewed 617-RPM
+union and latest carried kernel, producing a 410-package transaction with zero
+RPMs installed. The final artifact must still contain its own successful
+`OFFLINE_INSTALL_PREVIEW.txt` and pass final identity/signature/hash checks;
+this intermediate solver proof is not a target installation or archive receipt.
 A broad bundle lists package availability in `SUPPORTED_KERNELS.txt`; it does
 not prove successful DKMS compilation or GPU operation on every listed kernel.
 

@@ -147,8 +147,14 @@ A first signed bundle resolved the toolchain but its full driver solve exposed
 missing runtime requirements. That result is not full offline acceptance. The
 revised design must pass a fresh empty-installroot solve using **only** the
 final `drivers/` and `os-deps/` repositories for the full driver, toolchain and
-one selected exact kernel. At this documentation checkpoint, that revised
-acceptance is still pending. Keep `module_hotfixes=1` on the verified dependency
+one selected exact kernel. Independent native paired-only proof has passed for the reviewed 23-NVIDIA /
+594-OS (617-RPM) union: full pinned driver/toolchain plus kernel
+`4.18.0-553.180.1.el8_10.x86_64` resolved 410 packages, approximately 666 MiB,
+in an empty installroot; `--assumeno` aborted with zero installed RPMs. Only
+the two generated repositories were enabled. Final artifact acceptance still
+requires the automated bundle's included successful `OFFLINE_INSTALL_PREVIEW.txt`
+and final manifest/hash verification; this intermediate proof is not a final
+archive receipt. Keep `module_hotfixes=1` on the verified dependency
 repository, which carries AppStream modular RPMs without mirroring all upstream
 Red Hat module metadata.
 

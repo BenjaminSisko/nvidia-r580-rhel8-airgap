@@ -57,9 +57,12 @@ empty RHEL 8.10 installroot, using only approved entitled RHEL/EPEL sources and
 a temporary official NVIDIA source. It classifies downloaded RPMs by isolated
 vendor signature verification and includes them in the repository pair. This
 addresses a real first-build finding: valid signatures and a passing toolchain
-solve did not prove the driver runtime dependencies were complete. **Acceptance
-of the revised bundle is pending** until a fresh paired-repository-only solve
-passes without an external or assumed site OS repository. The revised builder
+solve did not prove the driver runtime dependencies were complete. Independent native paired-only proof has passed: 23 reviewed NVIDIA RPMs plus
+594 Red Hat/EPEL RPMs resolved the full driver/toolchain and latest carried
+kernel pair as a 410-package, approximately 666 MiB transaction in an empty
+installroot. The preview aborted with zero RPMs installed and no third
+repository. The final automated artifact must still carry its own successful
+`OFFLINE_INSTALL_PREVIEW.txt`; an archive/checksum is not claimed here. The revised builder
 withholds its completion manifest/archive until that fresh paired-only preview
 passes; inspect `OFFLINE_INSTALL_PREVIEW.txt` and `RUNTIME_DEPENDENCIES.tsv`.
 The automatic preview uses the latest carried kernel pair; it does not prove
