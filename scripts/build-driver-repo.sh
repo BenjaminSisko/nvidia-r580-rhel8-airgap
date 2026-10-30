@@ -291,7 +291,7 @@ if ((ALL_KERNELS)); then
     || die "failed to query entitled RHEL kernel-devel packages"
   while IFS= read -r candidate_kernel; do
     if valid_target_kernel "$candidate_kernel"; then TARGET_KERNELS+=("$candidate_kernel"); fi
-  done < <(printf '%s\n' "$kernel_query" | sort -Vu)
+  done < <(printf '%s\n' "$kernel_query" | sort_stock_kernels)
   ((${#TARGET_KERNELS[@]} > 0)) \
     || { log "BLOCKED: no stock RHEL 8.10 kernel-devel packages are visible"; exit 42; }
 else

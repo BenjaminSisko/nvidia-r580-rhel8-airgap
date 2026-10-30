@@ -171,3 +171,20 @@ verify_pinned_nvidia_rpm() {
 offline_preview_passed() {
   grep -Fxq 'Transaction Summary' "$1" && grep -Fq 'Operation aborted.' "$1"
 }
+
+# GNU version sorting puts the GA '.el8_10' suffix after numeric patch fields.
+# Sort the kernel's numeric update components explicitly, keeping GA first.
+sort_stock_kernels() {
+  local kernel update
+  while IFS= read -r kernel; do
+    valid_target_kernel "$kernel" || continue
+    update="${kernel#4.18.0-553}"
+    if [[ "$update" == .el8_10.x86_64 ]]; then
+      printf '0\t0\t0\t%s\n' "$kernel"
+    else
+      update="${update#.}"
+      update="${update%.el8_10.x86_64}"
+      printf '1\t%s\t%s\t%s\n' "${update%%.*}" "${update#*.}" "$kernel"
+    fi
+  done | sort -t $'\t' -k1,1n -k2,2n -k3,3n -k4,4 | cut -f4 | uniq
+}

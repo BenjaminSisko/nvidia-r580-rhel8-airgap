@@ -24,6 +24,15 @@ class ShellGuards(unittest.TestCase):
             with self.subTest(kernel=kernel):
                 self.assertEqual(self.run_shell('valid_target_kernel "$TARGET"', TARGET=kernel).returncode, 0)
 
+    def test_stock_kernel_sort_places_ga_first_and_latest_numeric_update_last(self) -> None:
+        kernels = ["4.18.0-553.180.2.el8_10.x86_64", "4.18.0-553.el8_10.x86_64",
+                   "4.18.0-553.9.100.el8_10.x86_64", "4.18.0-553.180.1.el8_10.x86_64",
+                   "4.18.0-553.9.3.el8_10.x86_64", "4.18.0-553.el8_10.x86_64",
+                   "5.14.0-687.51.1.el9_8.x86_64"]
+        result = self.run_shell(r"""printf '%s\n' "$KERNEL_LINES" | sort_stock_kernels""", KERNEL_LINES="\n".join(kernels))
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.splitlines(), [kernels[1], kernels[4], kernels[2], kernels[3], kernels[0]])
+
     def test_wrong_release_architecture_or_custom_kernel_is_rejected(self) -> None:
         for kernel in ("5.14.0-687.51.1.el9_8.x86_64", "4.18.0-553.125.1.el8_9.x86_64",
                        "4.18.0-553.125.1.el8_10.aarch64", "4.18.0-553.125.el8_10.x86_64",
