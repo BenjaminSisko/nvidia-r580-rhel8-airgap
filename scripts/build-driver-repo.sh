@@ -537,6 +537,12 @@ cp -f -- "$SCRIPT_DIR/../config/nvidia-r580-internal.repo.example" "$REPO_ROOT/"
   find "$OS_DEPS_DIR" -maxdepth 1 -type f -name '*.rpm' -printf '%f\n' | sort -V
 } > "${REPO_ROOT}/MANIFEST.txt"
 
+# Public repository payload must be readable after transfer even when the
+# connected staging administrator uses umask 077. These are bundle paths only.
+find "$REPO_ROOT" -type d -exec chmod 0755 {} +
+find "$REPO_ROOT" -type f -exec chmod 0644 {} +
+chmod 0755 "$REPO_ROOT/client-install.sh" "$REPO_ROOT/repo-server-import.sh"
+
 (
   cd "$REPO_ROOT"
   find . -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS
