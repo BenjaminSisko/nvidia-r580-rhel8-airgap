@@ -547,6 +547,7 @@ chmod 0755 "$REPO_ROOT/client-install.sh" "$REPO_ROOT/repo-server-import.sh"
   cd "$REPO_ROOT"
   find . -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS
 )
+chmod 0644 "$REPO_ROOT/SHA256SUMS"
 
 tar --sort=name --mtime="${AS_OF} 00:00:00 UTC" --owner=0 --group=0 --numeric-owner \
   -C "$OUTPUT_DIR" -czf "${OUTPUT_DIR}/nvidia-r580-rhel8-driver-repo-${AS_OF//-/}.tar.gz" repo-bundle
@@ -554,6 +555,7 @@ tar --sort=name --mtime="${AS_OF} 00:00:00 UTC" --owner=0 --group=0 --numeric-ow
   cd "$OUTPUT_DIR"
   archive_name="nvidia-r580-rhel8-driver-repo-${AS_OF//-/}.tar.gz"
   sha256sum "$archive_name" > "$archive_name.sha256"
+  chmod 0644 "$archive_name" "$archive_name.sha256"
 )
 
 if ((MAKE_ISO)); then
@@ -563,6 +565,7 @@ if ((MAKE_ISO)); then
     cd "$OUTPUT_DIR"
     iso_name="nvidia-r580-rhel8-${AS_OF//-/}-vol1.iso"
     sha256sum "$iso_name" > "$iso_name.sha256"
+    chmod 0644 "$iso_name" "$iso_name.sha256"
   )
 fi
 
