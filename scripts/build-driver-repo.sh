@@ -294,10 +294,23 @@ os_dependency_specs=(gcc make dkms elfutils-libelf-devel python3-dnf-plugin-vers
 for selected_kernel in "${TARGET_KERNELS[@]}"; do
   os_dependency_specs+=("kernel-devel-${selected_kernel}" "kernel-headers-${selected_kernel}")
 done
-# Both modes prove that every exact development/header pair exists before downloads.
+# Query every requested package once; verify each exact kernel pair against the
+# returned identities instead of paying one DNF startup per requested package.
+available_dependencies="$(dnf -q repoquery --available --qf '%{name}|%{version}-%{release}.%{arch}' "${os_dependency_specs[@]}")" \
+  || die "failed to query the selected RHEL/EPEL package identities"
 for required in "${os_dependency_specs[@]}"; do
-  dnf -q repoquery --available --qf '%{name}-%{epoch}:%{version}-%{release}.%{arch}' "$required" | grep -q . \
-    || { log "BLOCKED: required RHEL/EPEL package is unavailable: ${required}"; exit 42; }
+  case "$required" in
+    kernel-devel-*) required_identity="kernel-devel|${required#kernel-devel-}" ;;
+    kernel-headers-*) required_identity="kernel-headers|${required#kernel-headers-}" ;;
+    *) required_identity="" ;;
+  esac
+  if [[ -n "$required_identity" ]]; then
+    grep -Fxq "$required_identity" <<< "$available_dependencies" \
+      || { log "BLOCKED: required RHEL/EPEL package is unavailable: ${required}"; exit 42; }
+  else
+    awk -F '|' -v wanted="$required" '$1 == wanted {found=1} END {exit !found}' <<< "$available_dependencies" \
+      || { log "BLOCKED: required RHEL/EPEL package is unavailable: ${required}"; exit 42; }
+  fi
 done
 if ((DRY_RUN)); then
   log "Entitled RHEL/EPEL repositories expose every selected kernel pair and shared build prerequisites."
@@ -324,16 +337,12 @@ printf '%s\n' "${TARGET_KERNELS[@]}" > "${REPO_ROOT}/SUPPORTED_KERNELS.txt"
 printf 'target_kernel\tpackage\n' > "${REPO_ROOT}/OS_DEPENDENCIES.tsv"
 for selected_kernel in "${TARGET_KERNELS[@]}"; do
   for package_name in kernel-devel kernel-headers; do
-    matched_package=""
-    for package in "$OS_DEPS_DIR"/"${package_name}"-*.rpm; do
-      package_identity="$(rpm -qp --qf '%{NAME}|%{VERSION}-%{RELEASE}.%{ARCH}' "$package")"
-      if [[ "$package_identity" == "${package_name}|${selected_kernel}" ]]; then
-        matched_package="$package"
-        break
-      fi
-    done
-    [[ -n "$matched_package" ]] \
+    matched_package="$OS_DEPS_DIR/${package_name}-${selected_kernel}.rpm"
+    [[ -s "$matched_package" ]] \
       || { log "BLOCKED: downloaded payload lacks ${package_name}-${selected_kernel}"; exit 42; }
+    package_identity="$(rpm -qp --qf '%{NAME}|%{VERSION}-%{RELEASE}.%{ARCH}' "$matched_package")"
+    [[ "$package_identity" == "${package_name}|${selected_kernel}" ]] \
+      || { log "BLOCKED: downloaded RPM identity differs from ${package_name}-${selected_kernel}"; exit 42; }
     printf '%s\t%s\n' "$selected_kernel" "$(basename -- "$matched_package")" >> "${REPO_ROOT}/OS_DEPENDENCIES.tsv"
   done
 done

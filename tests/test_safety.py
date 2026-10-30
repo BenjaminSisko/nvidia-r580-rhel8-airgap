@@ -151,7 +151,17 @@ printf '%s\\n' "$*" >> "$MOCK_DNF_LOG"
 case "$*" in
   *'%{nevra}'*) printf "unsupported RHEL 8 DNF query field\\n" >&2; exit 7 ;;
   *--showduplicates*kernel-devel*) printf '4.18.0-553.el8_10.x86_64\\n4.18.0-553.125.1.el8_10.x86_64\\n4.18.0-553.125.1.el8_10.x86_64\\n5.14.0-687.51.1.el9_8.x86_64\\n' ;;
-  *) if [[ -n "$MISSING_SPEC" && "$*" == *"$MISSING_SPEC"* ]]; then exit 0; fi; printf available ;;
+  *)
+    for package_spec in "$@"; do
+      [[ "$package_spec" == "$MISSING_SPEC" ]] && continue
+      case "$package_spec" in
+        kernel-devel-*) printf 'kernel-devel|%s\\n' "${package_spec#kernel-devel-}" ;;
+        kernel-headers-*) printf 'kernel-headers|%s\\n' "${package_spec#kernel-headers-}" ;;
+        gcc|make|dkms|elfutils-libelf-devel|python3-dnf-plugin-versionlock|mokutil|pciutils)
+          printf '%s|1.0-1.el8.x86_64\\n' "$package_spec" ;;
+      esac
+    done ;;
+
 esac
 ''',
             }
@@ -183,6 +193,7 @@ esac
         self.assertIn("kernel-devel-4.18.0-553.el8_10.x86_64", calls)
         self.assertIn("kernel-headers-" + KERNEL, calls)
         self.assertNotIn("kernel-headers-5.14", calls)
+        self.assertEqual(len(calls.splitlines()), 2)  # discovery + one batch prerequisite query
 
     def test_missing_header_blocks_multi_kernel_dry_run(self) -> None:
         result, _ = self.run_builder(["--all-kernels", "--dry-run"], missing="kernel-headers-" + KERNEL)
