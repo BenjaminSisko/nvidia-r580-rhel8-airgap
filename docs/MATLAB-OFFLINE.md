@@ -3,8 +3,9 @@
 Reviewed November 2, 2026. Use **R2026a as the primary MATLAB release** for
 native Blackwell GPU computing. Keep the accepted **580.196.07 Open-DKMS driver**
 and October 30 **617-RPM driver bundle/release unchanged**. This guide adds
-workflow prerequisites and a separate NVIDIA development-artifact cache; it
-does not establish that every toolbox or application has passed on the target.
+workflow prerequisites and a separate NVIDIA development-artifact cache. Complete
+the [driver installation/validation](ON-SITE-QUICKSTART.md) first, using its
+approved kernel, open module and Secure Boot procedure. This guide does not establish that every toolbox or application has passed on the target.
 
 RHEL 8.10 meets the RHEL 8 minimum of 8.6 listed for
 [R2026a](https://www.mathworks.com/content/dam/mathworks/mathworks-dot-com/support/sysreq/files/system-requirements-release-2026a-linux.pdf),
@@ -299,8 +300,20 @@ modify the host RPM database:
 ```bash
 BUNDLE='/opt/nvidia-rhel8/repo-bundle'
 CUDA_CACHE='/absolute/path/to/matlab-nvidia-addons-20261102'
+mapfile -t TRT_PACKAGES < <(python3 - "$CUDA_CACHE" <<'PYLIST'
+import json, sys
+from pathlib import Path
+cache = Path(sys.argv[1])
+manifest = json.loads((cache / 'ASSET-MANIFEST.json').read_text())
+for asset in manifest['assets']:
+    if asset['profile'] == 'tensorrt-10.9.0.34-cuda12.8':
+        print(cache / 'payload' / asset['filename'])
+PYLIST
+)
+test "${#TRT_PACKAGES[@]}" -eq 23
 (
   set -euo pipefail
+  test "${#TRT_PACKAGES[@]}" -eq 23
   trust_dir="$(mktemp -d)"
   trap 'rm -rf "$trust_dir"' EXIT
   mkdir -m 700 "$trust_dir/gpg" "$trust_dir/rpm"
@@ -310,13 +323,14 @@ CUDA_CACHE='/absolute/path/to/matlab-nvidia-addons-20261102'
   test "$fingerprint" = '610C7B14E068A878070DA4E99CD0A493D42D0685'
   rpm --dbpath "$trust_dir/rpm" --initdb
   rpm --dbpath "$trust_dir/rpm" --import "$BUNDLE/NVIDIA-GPG-KEY-D42D0685.pub"
-  for package in "$CUDA_CACHE"/payload/*.rpm; do
+  for package in "${TRT_PACKAGES[@]}"; do
     rpmkeys --dbpath "$trust_dir/rpm" --checksig "$package"
   done
 )
 ```
 
-Require every package to report valid digests/signatures with that approved key;
+Use only these 23 manifest-listed RPM paths, even if the cache contains extra
+files. Require every package to report valid digests/signatures with that approved key;
 a missing key/signature is a failure. A private-prefix extraction preserves
 host RPM registration and the driver.
 The following is an operator action on the offline Linux machine; it requires
@@ -324,13 +338,15 @@ The following is an operator action on the offline Linux machine; it requires
 
 ```bash
 TRT_SDK="$HOME/opt/nvidia/tensorrt-10.9.0.34-rhel8"
-# Set CUDA_CACHE to the verified cache above; inspect this exact list first.
-find "$CUDA_CACHE/payload" -maxdepth 1 -name '*.rpm' -type f -print | sort
+# Use the exact TRT_PACKAGES array populated and verified above.
+printf '%s\n' "${TRT_PACKAGES[@]}"
 (
   set -euo pipefail
-  test ! -e "$TRT_SDK" && test ! -L "$TRT_SDK"
+  test "${#TRT_PACKAGES[@]}" -eq 23
+  test ! -e "$TRT_SDK"
+  test ! -L "$TRT_SDK"
   mkdir -p "$TRT_SDK"
-  for package in "$CUDA_CACHE"/payload/*.rpm; do
+  for package in "${TRT_PACKAGES[@]}"; do
     rpm2cpio "$package" | (cd "$TRT_SDK" && cpio -idm --no-absolute-filenames)
   done
 )
