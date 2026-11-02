@@ -3,6 +3,8 @@
 *.rpm
 *.tar
 *.tar.gz
+*.tar.xz
+*.run
 *.sha256
 *.log
 __pycache__/

@@ -76,11 +76,43 @@ preview passes; inspect that receipt and `RUNTIME_DEPENDENCIES.tsv`.
 The automatic preview uses the latest carried kernel pair; it does not prove
 DKMS or solver execution for all 104 alternatives.
 
-The CUDA Toolkit, cuDNN, TensorRT, MATLAB, entitlement material, credentials,
-private signing keys, and private host evidence are outside the payload.
-Driver support does not establish support for a particular MATLAB release or
-other application on RHEL 8.10; the workload and application version remain
-unconfirmed.
+The October 30 driver payload excludes CUDA Toolkit, cuDNN, TensorRT, MATLAB,
+entitlement material, credentials, private signing keys and private host evidence.
+The optional MATLAB development supplement below is a separate delivery.
+
+## MATLAB R2026a development supplement
+
+For the same RHEL 8.10 Blackwell hardware, the separate supplement pins
+**CUDA 12.8.2** toolkit archives and **TensorRT 10.9.0.34 for CUDA 12.8**
+NVIDIA RPM artifacts. Its 56 files total **9,317,457,352 bytes** before any
+extraction. The source manifest records NVIDIA's exact sizes and SHA-256 hashes.
+The stager downloads and verifies these files without installing them or
+replacing the R580 driver:
+
+```bash
+python3 scripts/stage-matlab-addons.py
+python3 scripts/stage-matlab-addons.py --fetch
+python3 scripts/stage-matlab-addons.py --verify
+```
+
+The first command prints a plan. Download on a connected machine before moving
+the output directory to the offline server. Keep at least 2 GiB free beyond the
+download size; extraction and MATLAB media require additional space.
+See the [MATLAB offline guide](docs/MATLAB-OFFLINE.md),
+[pinned NVIDIA manifest](docs/MATLAB-NVIDIA-ASSETS.json), and
+[MATLAB readiness script](scripts/matlab_readiness.m).
+
+Normal MATLAB GPU calculations and CUDA MEX use MATLAB's supplied CUDA
+components. This external supplement serves standalone development and custom
+libraries. MATLAB installers, licensed toolboxes, support packages and models
+must be obtained separately through MathWorks. The NVIDIA artifacts are not
+a verified offline DNF dependency closure or proof of target execution.
+
+R2026a provides native Blackwell support. Optional R2024a/b workflows remain
+conditional on forward compatibility and numerical validation. The R2026a GPU
+Coder external cuDNN 8.9 requirement has a support gap on Blackwell; the guide
+records it explicitly instead of substituting an incompatible cuDNN ABI.
+The completed October 30 driver archive and release remain unchanged.
 
 ## Download the prepared kit
 

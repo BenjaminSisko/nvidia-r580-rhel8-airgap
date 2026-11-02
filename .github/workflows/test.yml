@@ -30,7 +30,7 @@ jobs:
           python -m unittest discover -s tests -v
       - name: Reject generated or vendor payloads
         run: |
-          if git ls-files '*.rpm' '*.iso' '*.tar' '*.tar.gz' '*.log' | grep -q .; then
+          if git ls-files '*.rpm' '*.iso' '*.tar' '*.tar.gz' '*.tar.xz' '*.run' '*.log' | grep -q .; then
             echo 'Generated or vendor payload is tracked in Git.' >&2
             exit 1
           fi

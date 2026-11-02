@@ -1,0 +1,673 @@
+{
+  "schema_version": 1,
+  "target_os": "RHEL 8.10",
+  "target_architecture": "x86_64",
+  "matlab_primary": "R2026a",
+  "created_date": "2026-11-02",
+  "cuda_release": "12.8.2",
+  "upstream_manifest_url": "https://developer.download.nvidia.com/compute/cuda/redist/redistrib_12.8.2.json",
+  "upstream_release_date": "2026-04-21",
+  "excluded_vendor_components": [
+    "fabricmanager",
+    "imex",
+    "libnvidia_nscq",
+    "libnvsdm",
+    "nvidia_driver",
+    "nvidia_fs"
+  ],
+  "assets": [
+    {
+      "component": "cuda_cccl",
+      "version": "12.8.90",
+      "filename": "cuda_cccl-linux-x86_64-12.8.90-archive.tar.xz",
+      "url": "https://developer.download.nvidia.com/compute/cuda/redist/cuda_cccl/linux-x86_64/cuda_cccl-linux-x86_64-12.8.90-archive.tar.xz",
+      "size_bytes": 928524,
+      "sha256": "0740e9e01e4f15e17c5ab8d68bba4f8ec0eb6b84edccba4ac45112d2d2174e4b",
+      "license": "CUDA Toolkit",
+      "profile": "cuda-12.8.2"
+    },
+    {
+      "component": "cuda_cudart",
+      "version": "12.8.90",
+      "filename": "cuda_cudart-linux-x86_64-12.8.90-archive.tar.xz",
+      "url": "https://developer.download.nvidia.com/compute/cuda/redist/cuda_cudart/linux-x86_64/cuda_cudart-linux-x86_64-12.8.90-archive.tar.xz",
+      "size_bytes": 1354240,
+      "sha256": "8d566b5fe745c46842dc16945cf36686227536decd2302c372be86da37faca68",
+      "license": "CUDA Toolkit",
+      "profile": "cuda-12.8.2"
+    },
+    {
+      "component": "cuda_cuobjdump",
+      "version": "12.8.90",
+      "filename": "cuda_cuobjdump-linux-x86_64-12.8.90-archive.tar.xz",
+      "url": "https://developer.download.nvidia.com/compute/cuda/redist/cuda_cuobjdump/linux-x86_64/cuda_cuobjdump-linux-x86_64-12.8.90-archive.tar.xz",
+      "size_bytes": 207644,
+      "sha256": "dbf41355a0f7a8aa491c1839a6c6ff8df02cdb6c6eefd66360543616c1b4980f",
+      "license": "CUDA Toolkit",
+      "profile": "cuda-12.8.2"
+    },
+    {
+      "component": "cuda_cupti",
+      "version": "12.8.90",
+      "filename": "cuda_cupti-linux-x86_64-12.8.90-archive.tar.xz",
+      "url": "https://developer.download.nvidia.com/compute/cuda/redist/cuda_cupti/linux-x86_64/cuda_cupti-linux-x86_64-12.8.90-archive.tar.xz",
+      "size_bytes": 15383056,
+      "sha256": "7bf5db86cb82f26a6a3cb9e2fa4dc2a131d25885f59fdbc647938929924405db",
+      "license": "CUDA Toolkit",
+      "profile": "cuda-12.8.2"
+    },
+    {
+      "component": "cuda_cuxxfilt",
+      "version": "12.8.90",
+      "filename": "cuda_cuxxfilt-linux-x86_64-12.8.90-archive.tar.xz",
+      "url": "https://developer.download.nvidia.com/compute/cuda/redist/cuda_cuxxfilt/linux-x86_64/cuda_cuxxfilt-linux-x86_64-12.8.90-archive.tar.xz",
+      "size_bytes": 188400,
+      "sha256": "cbe77c55b2e9a9bf777e88db01d320d227017075c35d0a96448fb5bd6b5697f2",
+      "license": "CUDA Toolkit",
+      "profile": "cuda-12.8.2"
+    },
+    {
+      "component": "cuda_demo_suite",
+      "version": "12.8.90",
+      "filename": "cuda_demo_suite-linux-x86_64-12.8.90-archive.tar.xz",
+      "url": "https://developer.download.nvidia.com/compute/cuda/redist/cuda_demo_suite/linux-x86_64/cuda_demo_suite-linux-x86_64-12.8.90-archive.tar.xz",
+      "size_bytes": 4027860,
+      "sha256": "c5cd54cfea8cf3929d7e5af92d2dc832e2252d10e61fd837a389d4ac21493843",
+      "license": "CUDA Toolkit",
+      "profile": "cuda-12.8.2"
+    },
+    {
+      "component": "cuda_documentation",
+      "version": "12.8.90",
+      "filename": "cuda_documentation-linux-x86_64-12.8.90-archive.tar.xz",
+      "url": "https://developer.download.nvidia.com/compute/cuda/redist/cuda_documentation/linux-x86_64/cuda_documentation-linux-x86_64-12.8.90-archive.tar.xz",
+      "size_bytes": 67152,
+      "sha256": "70eb9e023a995f7df5e6dc0b35682d16432d107f442789f6f69a016a5c03b4a2",
+      "license": "CUDA Toolkit",
+      "profile": "cuda-12.8.2"
+    },
+    {
+      "component": "cuda_gdb",
+      "version": "12.8.90",
+      "filename": "cuda_gdb-linux-x86_64-12.8.90-archive.tar.xz",
+      "url": "https://developer.download.nvidia.com/compute/cuda/redist/cuda_gdb/linux-x86_64/cuda_gdb-linux-x86_64-12.8.90-archive.tar.xz",
+      "size_bytes": 64188228,
+      "sha256": "f10953b7bb795b1ff59f769da8d2e776f5b0f9e4bf5daf2a6c3bd301250321ff",
+      "license": "CUDA Toolkit",
+      "profile": "cuda-12.8.2"
+    },
+    {
+      "component": "cuda_nsight",
+      "version": "12.8.90",
+      "filename": "cuda_nsight-linux-x86_64-12.8.90-archive.tar.xz",
+      "url": "https://developer.download.nvidia.com/compute/cuda/redist/cuda_nsight/linux-x86_64/cuda_nsight-linux-x86_64-12.8.90-archive.tar.xz",
+      "size_bytes": 118689616,
+      "sha256": "3bc79396a171b90a40b57ac00df1a8d5cb31783767b2a66351f2bcf163c9aaa6",
+      "license": "CUDA Toolkit",
+      "profile": "cuda-12.8.2"
+    },
+    {
+      "component": "cuda_nvcc",
+      "version": "12.8.93",
+      "filename": "cuda_nvcc-linux-x86_64-12.8.93-archive.tar.xz",
+      "url": "https://developer.download.nvidia.com/compute/cuda/redist/cuda_nvcc/linux-x86_64/cuda_nvcc-linux-x86_64-12.8.93-archive.tar.xz",
+      "size_bytes": 79015464,
+      "sha256": "9961b3484b6b71314063709a4f9529654f96782ad39e72bf1e00f070db8210d3",
+      "license": "CUDA Toolkit",
+      "profile": "cuda-12.8.2"
+    },
+    {
+      "component": "cuda_nvdisasm",
+      "version": "12.8.90",
+      "filename": "cuda_nvdisasm-linux-x86_64-12.8.90-archive.tar.xz",
+      "url": "https://developer.download.nvidia.com/compute/cuda/redist/cuda_nvdisasm/linux-x86_64/cuda_nvdisasm-linux-x86_64-12.8.90-archive.tar.xz",
+      "size_bytes": 5085152,
+      "sha256": "8ac63f4079c47707ec958af3a97ceeb18194e16827a2766058f5872f6c3412ae",
+      "license": "CUDA Toolkit",
+      "profile": "cuda-12.8.2"
+    },
+    {
+      "component": "cuda_nvml_dev",
+      "version": "12.8.90",
+      "filename": "cuda_nvml_dev-linux-x86_64-12.8.90-archive.tar.xz",
+      "url": "https://developer.download.nvidia.com/compute/cuda/redist/cuda_nvml_dev/linux-x86_64/cuda_nvml_dev-linux-x86_64-12.8.90-archive.tar.xz",
+      "size_bytes": 124456,
+      "sha256": "d68109dcbf59691909c05b01213e5c3d19b4b27f7e7c18e42c6adc0a7f4f6f31",
+      "license": "CUDA Toolkit",
+      "profile": "cuda-12.8.2"
+    },
+    {
+      "component": "cuda_nvprof",
+      "version": "12.8.90",
+      "filename": "cuda_nvprof-linux-x86_64-12.8.90-archive.tar.xz",
+      "url": "https://developer.download.nvidia.com/compute/cuda/redist/cuda_nvprof/linux-x86_64/cuda_nvprof-linux-x86_64-12.8.90-archive.tar.xz",
+      "size_bytes": 2401256,
+      "sha256": "66d5e0e498a50f1f240d80aa0a0577709b39aa98e2a71a578bc3bc271b9ad131",
+      "license": "CUDA Toolkit",
+      "profile": "cuda-12.8.2"
+    },
+    {
+      "component": "cuda_nvprune",
+      "version": "12.8.90",
+      "filename": "cuda_nvprune-linux-x86_64-12.8.90-archive.tar.xz",
+      "url": "https://developer.download.nvidia.com/compute/cuda/redist/cuda_nvprune/linux-x86_64/cuda_nvprune-linux-x86_64-12.8.90-archive.tar.xz",
+      "size_bytes": 58252,
+      "sha256": "599a65f7f6d8f245d03a38344bf8c785a7bfbcd40eaa76f80c4608ca801da5f8",
+      "license": "CUDA Toolkit",
+      "profile": "cuda-12.8.2"
+    },
+    {
+      "component": "cuda_nvrtc",
+      "version": "12.8.93",
+      "filename": "cuda_nvrtc-linux-x86_64-12.8.93-archive.tar.xz",
+      "url": "https://developer.download.nvidia.com/compute/cuda/redist/cuda_nvrtc/linux-x86_64/cuda_nvrtc-linux-x86_64-12.8.93-archive.tar.xz",
+      "size_bytes": 114287212,
+      "sha256": "992f5e4d95cb499f41e442245efa877dbd60c711451afe680a26700d61eb3843",
+      "license": "CUDA Toolkit",
+      "profile": "cuda-12.8.2"
+    },
+    {
+      "component": "cuda_nvtx",
+      "version": "12.8.90",
+      "filename": "cuda_nvtx-linux-x86_64-12.8.90-archive.tar.xz",
+      "url": "https://developer.download.nvidia.com/compute/cuda/redist/cuda_nvtx/linux-x86_64/cuda_nvtx-linux-x86_64-12.8.90-archive.tar.xz",
+      "size_bytes": 49052,
+      "sha256": "7755524026d30e2c211d793392166517e379724d19eb9e8e352693f7d5fa0c95",
+      "license": "CUDA Toolkit",
+      "profile": "cuda-12.8.2"
+    },
+    {
+      "component": "cuda_nvvp",
+      "version": "12.8.93",
+      "filename": "cuda_nvvp-linux-x86_64-12.8.93-archive.tar.xz",
+      "url": "https://developer.download.nvidia.com/compute/cuda/redist/cuda_nvvp/linux-x86_64/cuda_nvvp-linux-x86_64-12.8.93-archive.tar.xz",
+      "size_bytes": 112386012,
+      "sha256": "f3711260e68ec23a4bd40dacdbcaad81ca3016e103d80bdb3d14f64aa29ca68d",
+      "license": "CUDA Toolkit",
+      "profile": "cuda-12.8.2"
+    },
+    {
+      "component": "cuda_opencl",
+      "version": "12.8.90",
+      "filename": "cuda_opencl-linux-x86_64-12.8.90-archive.tar.xz",
+      "url": "https://developer.download.nvidia.com/compute/cuda/redist/cuda_opencl/linux-x86_64/cuda_opencl-linux-x86_64-12.8.90-archive.tar.xz",
+      "size_bytes": 94064,
+      "sha256": "093c1264b9f3fb9a53b78b76ab8c1babd2aab8872149d968b58d642170a62bde",
+      "license": "CUDA Toolkit",
+      "profile": "cuda-12.8.2"
+    },
+    {
+      "component": "cuda_profiler_api",
+      "version": "12.8.90",
+      "filename": "cuda_profiler_api-linux-x86_64-12.8.90-archive.tar.xz",
+      "url": "https://developer.download.nvidia.com/compute/cuda/redist/cuda_profiler_api/linux-x86_64/cuda_profiler_api-linux-x86_64-12.8.90-archive.tar.xz",
+      "size_bytes": 16180,
+      "sha256": "f97b3779e909caa5edf56606432ec1dd3173a5d3d503ef39f367467dbdb006b7",
+      "license": "CUDA Toolkit",
+      "profile": "cuda-12.8.2"
+    },
+    {
+      "component": "cuda_sandbox_dev",
+      "version": "12.8.90",
+      "filename": "cuda_sandbox_dev-linux-x86_64-12.8.90-archive.tar.xz",
+      "url": "https://developer.download.nvidia.com/compute/cuda/redist/cuda_sandbox_dev/linux-x86_64/cuda_sandbox_dev-linux-x86_64-12.8.90-archive.tar.xz",
+      "size_bytes": 29028,
+      "sha256": "4192342b75a135329b7f31e72920f0a447495c59ac2ae46338b8ad4023a0d660",
+      "license": "CUDA Toolkit",
+      "profile": "cuda-12.8.2"
+    },
+    {
+      "component": "cuda_sanitizer_api",
+      "version": "12.8.93",
+      "filename": "cuda_sanitizer_api-linux-x86_64-12.8.93-archive.tar.xz",
+      "url": "https://developer.download.nvidia.com/compute/cuda/redist/cuda_sanitizer_api/linux-x86_64/cuda_sanitizer_api-linux-x86_64-12.8.93-archive.tar.xz",
+      "size_bytes": 9940020,
+      "sha256": "ae3574f052c0e06c95305962668eb1fe6ab571dfbb58b305fdb14d523bb1b240",
+      "license": "CUDA Toolkit",
+      "profile": "cuda-12.8.2"
+    },
+    {
+      "component": "libcublas",
+      "version": "12.8.5.5",
+      "filename": "libcublas-linux-x86_64-12.8.5.5-archive.tar.xz",
+      "url": "https://developer.download.nvidia.com/compute/cuda/redist/libcublas/linux-x86_64/libcublas-linux-x86_64-12.8.5.5-archive.tar.xz",
+      "size_bytes": 949754460,
+      "sha256": "f732baf6e55de1844f9bea6646ceae13f30b10592f87b12406bf4713b7f67521",
+      "license": "CUDA Toolkit",
+      "profile": "cuda-12.8.2"
+    },
+    {
+      "component": "libcufft",
+      "version": "11.3.3.83",
+      "filename": "libcufft-linux-x86_64-11.3.3.83-archive.tar.xz",
+      "url": "https://developer.download.nvidia.com/compute/cuda/redist/libcufft/linux-x86_64/libcufft-linux-x86_64-11.3.3.83-archive.tar.xz",
+      "size_bytes": 448695100,
+      "sha256": "126fe08fc0df07a7420c2da05a2ae72ea19660fff79bf06de16520d1f915cb83",
+      "license": "CUDA Toolkit",
+      "profile": "cuda-12.8.2"
+    },
+    {
+      "component": "libcufile",
+      "version": "1.13.1.3",
+      "filename": "libcufile-linux-x86_64-1.13.1.3-archive.tar.xz",
+      "url": "https://developer.download.nvidia.com/compute/cuda/redist/libcufile/linux-x86_64/libcufile-linux-x86_64-1.13.1.3-archive.tar.xz",
+      "size_bytes": 42096496,
+      "sha256": "34a4bfe8fe98cb97e7631dfd29969284287f7cf8e19b372d49a4ee8f1e7ed797",
+      "license": "CUDA Toolkit",
+      "profile": "cuda-12.8.2"
+    },
+    {
+      "component": "libcurand",
+      "version": "10.3.9.90",
+      "filename": "libcurand-linux-x86_64-10.3.9.90-archive.tar.xz",
+      "url": "https://developer.download.nvidia.com/compute/cuda/redist/libcurand/linux-x86_64/libcurand-linux-x86_64-10.3.9.90-archive.tar.xz",
+      "size_bytes": 88606668,
+      "sha256": "32a5ec30be446c1b7228d1bc502b2f029cc8b59a5e362c70d960754fa646778b",
+      "license": "CUDA Toolkit",
+      "profile": "cuda-12.8.2"
+    },
+    {
+      "component": "libcusolver",
+      "version": "11.7.3.90",
+      "filename": "libcusolver-linux-x86_64-11.7.3.90-archive.tar.xz",
+      "url": "https://developer.download.nvidia.com/compute/cuda/redist/libcusolver/linux-x86_64/libcusolver-linux-x86_64-11.7.3.90-archive.tar.xz",
+      "size_bytes": 256328120,
+      "sha256": "d40ac4040aa192183a072a52cedabd23449b7dd67adbe1e760ca08162f765504",
+      "license": "CUDA Toolkit",
+      "profile": "cuda-12.8.2"
+    },
+    {
+      "component": "libcusparse",
+      "version": "12.5.8.93",
+      "filename": "libcusparse-linux-x86_64-12.5.8.93-archive.tar.xz",
+      "url": "https://developer.download.nvidia.com/compute/cuda/redist/libcusparse/linux-x86_64/libcusparse-linux-x86_64-12.5.8.93-archive.tar.xz",
+      "size_bytes": 322479876,
+      "sha256": "aa535ceb56690518c89257d985b13d505f951e4bba7591dbfaa179fc2fff329e",
+      "license": "CUDA Toolkit",
+      "profile": "cuda-12.8.2"
+    },
+    {
+      "component": "libnpp",
+      "version": "12.3.3.100",
+      "filename": "libnpp-linux-x86_64-12.3.3.100-archive.tar.xz",
+      "url": "https://developer.download.nvidia.com/compute/cuda/redist/libnpp/linux-x86_64/libnpp-linux-x86_64-12.3.3.100-archive.tar.xz",
+      "size_bytes": 256289120,
+      "sha256": "0f77078aef0428a77fb6b661d477edb4cbf1c4b9e55f931cf211ea1a504c2949",
+      "license": "CUDA Toolkit",
+      "profile": "cuda-12.8.2"
+    },
+    {
+      "component": "libnvfatbin",
+      "version": "12.8.90",
+      "filename": "libnvfatbin-linux-x86_64-12.8.90-archive.tar.xz",
+      "url": "https://developer.download.nvidia.com/compute/cuda/redist/libnvfatbin/linux-x86_64/libnvfatbin-linux-x86_64-12.8.90-archive.tar.xz",
+      "size_bytes": 923532,
+      "sha256": "3a8d0609961af2034c7c7c209f5efcfb25c39095435dd23a827b7ca0e48b0f3d",
+      "license": "CUDA Toolkit",
+      "profile": "cuda-12.8.2"
+    },
+    {
+      "component": "libnvjitlink",
+      "version": "12.8.93",
+      "filename": "libnvjitlink-linux-x86_64-12.8.93-archive.tar.xz",
+      "url": "https://developer.download.nvidia.com/compute/cuda/redist/libnvjitlink/linux-x86_64/libnvjitlink-linux-x86_64-12.8.93-archive.tar.xz",
+      "size_bytes": 53997360,
+      "sha256": "29220664ad272c513d3213133ace6d6590303e46b42a17b05bc2bee90e54a888",
+      "license": "CUDA Toolkit",
+      "profile": "cuda-12.8.2"
+    },
+    {
+      "component": "libnvjpeg",
+      "version": "12.3.5.92",
+      "filename": "libnvjpeg-linux-x86_64-12.3.5.92-archive.tar.xz",
+      "url": "https://developer.download.nvidia.com/compute/cuda/redist/libnvjpeg/linux-x86_64/libnvjpeg-linux-x86_64-12.3.5.92-archive.tar.xz",
+      "size_bytes": 3276440,
+      "sha256": "9f4cfb4a293c329b5b902790814bdf6a652b162fd17510b7ea7d141c123e7bbc",
+      "license": "CUDA Toolkit",
+      "profile": "cuda-12.8.2"
+    },
+    {
+      "component": "nsight_compute",
+      "version": "2025.1.1.2",
+      "filename": "nsight_compute-linux-x86_64-2025.1.1.2-archive.tar.xz",
+      "url": "https://developer.download.nvidia.com/compute/cuda/redist/nsight_compute/linux-x86_64/nsight_compute-linux-x86_64-2025.1.1.2-archive.tar.xz",
+      "size_bytes": 300201512,
+      "sha256": "6f55f6dfb33abe15b25a5f0c656ae8d9b6a6f33e55f0337b9b6a017daf8ad610",
+      "license": "NVIDIA SLA",
+      "profile": "cuda-12.8.2"
+    },
+    {
+      "component": "nsight_systems",
+      "version": "2024.6.2.225",
+      "filename": "nsight_systems-linux-x86_64-2024.6.2.225-archive.tar.xz",
+      "url": "https://developer.download.nvidia.com/compute/cuda/redist/nsight_systems/linux-x86_64/nsight_systems-linux-x86_64-2024.6.2.225-archive.tar.xz",
+      "size_bytes": 1002341612,
+      "sha256": "dbbce7681d5f75303e10a43cdd6e282e2f05f4ffeba50c4361bd26b7bd3da17b",
+      "license": "NVIDIA SLA",
+      "profile": "cuda-12.8.2"
+    },
+    {
+      "component": "libnvinfer-bin",
+      "version": "10.9.0.34",
+      "release": "1.cuda12.8",
+      "filename": "libnvinfer-bin-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "url": "https://developer.download.nvidia.com/compute/cuda/repos/rhel8/x86_64/libnvinfer-bin-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "size_bytes": 499504,
+      "sha256": "117281158d372ab24b89dccefb487bb8e752d4b6fda2b708d3dd6df721c3580a",
+      "profile": "tensorrt-10.9.0.34-cuda12.8",
+      "license": "NVIDIA TensorRT license",
+      "package_architecture": "x86_64"
+    },
+    {
+      "component": "libnvinfer-devel",
+      "version": "10.9.0.34",
+      "release": "1.cuda12.8",
+      "filename": "libnvinfer-devel-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "url": "https://developer.download.nvidia.com/compute/cuda/repos/rhel8/x86_64/libnvinfer-devel-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "size_bytes": 2310442980,
+      "sha256": "df50247da16d14112ba00b04df6d3c1b6375fa8619c32816addb1283a7be2db2",
+      "profile": "tensorrt-10.9.0.34-cuda12.8",
+      "license": "NVIDIA TensorRT license",
+      "package_architecture": "x86_64"
+    },
+    {
+      "component": "libnvinfer-dispatch-devel",
+      "version": "10.9.0.34",
+      "release": "1.cuda12.8",
+      "filename": "libnvinfer-dispatch-devel-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "url": "https://developer.download.nvidia.com/compute/cuda/repos/rhel8/x86_64/libnvinfer-dispatch-devel-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "size_bytes": 139852,
+      "sha256": "14570941f4ce4a07ac7e2d068287f253593771b89c49d6a83fb863c23360354e",
+      "profile": "tensorrt-10.9.0.34-cuda12.8",
+      "license": "NVIDIA TensorRT license",
+      "package_architecture": "x86_64"
+    },
+    {
+      "component": "libnvinfer-dispatch10",
+      "version": "10.9.0.34",
+      "release": "1.cuda12.8",
+      "filename": "libnvinfer-dispatch10-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "url": "https://developer.download.nvidia.com/compute/cuda/repos/rhel8/x86_64/libnvinfer-dispatch10-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "size_bytes": 236240,
+      "sha256": "6e8f76669e269ddef4f1b6ae4eabc9f3dc916f64bc22dc26e8f4c876d807b08a",
+      "profile": "tensorrt-10.9.0.34-cuda12.8",
+      "license": "NVIDIA TensorRT license",
+      "package_architecture": "x86_64"
+    },
+    {
+      "component": "libnvinfer-headers-devel",
+      "version": "10.9.0.34",
+      "release": "1.cuda12.8",
+      "filename": "libnvinfer-headers-devel-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "url": "https://developer.download.nvidia.com/compute/cuda/repos/rhel8/x86_64/libnvinfer-headers-devel-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "size_bytes": 130536,
+      "sha256": "0517aee6c519167d42af398bd842bc4697767101b109acc5f51da57e65fe827e",
+      "profile": "tensorrt-10.9.0.34-cuda12.8",
+      "license": "NVIDIA TensorRT license",
+      "package_architecture": "x86_64"
+    },
+    {
+      "component": "libnvinfer-headers-plugin-devel",
+      "version": "10.9.0.34",
+      "release": "1.cuda12.8",
+      "filename": "libnvinfer-headers-plugin-devel-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "url": "https://developer.download.nvidia.com/compute/cuda/repos/rhel8/x86_64/libnvinfer-headers-plugin-devel-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "size_bytes": 12912,
+      "sha256": "3f2135ce30f36bc1184ce5ae38a87b7b44b996601e1727bfe43f184258a07dd1",
+      "profile": "tensorrt-10.9.0.34-cuda12.8",
+      "license": "NVIDIA TensorRT license",
+      "package_architecture": "x86_64"
+    },
+    {
+      "component": "libnvinfer-lean-devel",
+      "version": "10.9.0.34",
+      "release": "1.cuda12.8",
+      "filename": "libnvinfer-lean-devel-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "url": "https://developer.download.nvidia.com/compute/cuda/repos/rhel8/x86_64/libnvinfer-lean-devel-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "size_bytes": 261263028,
+      "sha256": "349467e39945f128c3d331abf1c3933e73ba6daff74091fcda397645870cca20",
+      "profile": "tensorrt-10.9.0.34-cuda12.8",
+      "license": "NVIDIA TensorRT license",
+      "package_architecture": "x86_64"
+    },
+    {
+      "component": "libnvinfer-lean10",
+      "version": "10.9.0.34",
+      "release": "1.cuda12.8",
+      "filename": "libnvinfer-lean10-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "url": "https://developer.download.nvidia.com/compute/cuda/repos/rhel8/x86_64/libnvinfer-lean10-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "size_bytes": 17632704,
+      "sha256": "430b4bf0cd37a74bcf865c6759631444f368e73274ac20546b9bc02ec1d51512",
+      "profile": "tensorrt-10.9.0.34-cuda12.8",
+      "license": "NVIDIA TensorRT license",
+      "package_architecture": "x86_64"
+    },
+    {
+      "component": "libnvinfer-plugin-devel",
+      "version": "10.9.0.34",
+      "release": "1.cuda12.8",
+      "filename": "libnvinfer-plugin-devel-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "url": "https://developer.download.nvidia.com/compute/cuda/repos/rhel8/x86_64/libnvinfer-plugin-devel-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "size_bytes": 17433060,
+      "sha256": "99353b48cbdc68298e84b9298045034618b86c6f960db09f209f5ad11802f074",
+      "profile": "tensorrt-10.9.0.34-cuda12.8",
+      "license": "NVIDIA TensorRT license",
+      "package_architecture": "x86_64"
+    },
+    {
+      "component": "libnvinfer-plugin10",
+      "version": "10.9.0.34",
+      "release": "1.cuda12.8",
+      "filename": "libnvinfer-plugin10-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "url": "https://developer.download.nvidia.com/compute/cuda/repos/rhel8/x86_64/libnvinfer-plugin10-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "size_bytes": 15932424,
+      "sha256": "bb9acb1a93466f0fb07f5b221d7969435ecc3150f14d919d92bb029e27e17fb4",
+      "profile": "tensorrt-10.9.0.34-cuda12.8",
+      "license": "NVIDIA TensorRT license",
+      "package_architecture": "x86_64"
+    },
+    {
+      "component": "libnvinfer-samples",
+      "version": "10.9.0.34",
+      "release": "1.cuda12.8",
+      "filename": "libnvinfer-samples-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "url": "https://developer.download.nvidia.com/compute/cuda/repos/rhel8/x86_64/libnvinfer-samples-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "size_bytes": 189612744,
+      "sha256": "b9ae2b40ef59cc8aabe0ef6ee8d4c018af37fb37b2cde61af61e501c3e3b1da5",
+      "profile": "tensorrt-10.9.0.34-cuda12.8",
+      "license": "NVIDIA TensorRT license",
+      "package_architecture": "x86_64"
+    },
+    {
+      "component": "libnvinfer-vc-plugin-devel",
+      "version": "10.9.0.34",
+      "release": "1.cuda12.8",
+      "filename": "libnvinfer-vc-plugin-devel-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "url": "https://developer.download.nvidia.com/compute/cuda/repos/rhel8/x86_64/libnvinfer-vc-plugin-devel-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "size_bytes": 108312,
+      "sha256": "dfe4bdea4799de81cd68b11fe869aab34cdebeca957d35e75db3b8e434da9602",
+      "profile": "tensorrt-10.9.0.34-cuda12.8",
+      "license": "NVIDIA TensorRT license",
+      "package_architecture": "x86_64"
+    },
+    {
+      "component": "libnvinfer-vc-plugin10",
+      "version": "10.9.0.34",
+      "release": "1.cuda12.8",
+      "filename": "libnvinfer-vc-plugin10-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "url": "https://developer.download.nvidia.com/compute/cuda/repos/rhel8/x86_64/libnvinfer-vc-plugin10-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "size_bytes": 252520,
+      "sha256": "593d793917cb2a8f323a1ab6a3a2c401e718e6248e5251922de2892884edc7c2",
+      "profile": "tensorrt-10.9.0.34-cuda12.8",
+      "license": "NVIDIA TensorRT license",
+      "package_architecture": "x86_64"
+    },
+    {
+      "component": "libnvinfer10",
+      "version": "10.9.0.34",
+      "release": "1.cuda12.8",
+      "filename": "libnvinfer10-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "url": "https://developer.download.nvidia.com/compute/cuda/repos/rhel8/x86_64/libnvinfer10-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "size_bytes": 2244159784,
+      "sha256": "538820599f0e5f0aaf64a29afa3f00fdead98de5fdfe62452905e35875a95d8b",
+      "profile": "tensorrt-10.9.0.34-cuda12.8",
+      "license": "NVIDIA TensorRT license",
+      "package_architecture": "x86_64"
+    },
+    {
+      "component": "libnvonnxparsers-devel",
+      "version": "10.9.0.34",
+      "release": "1.cuda12.8",
+      "filename": "libnvonnxparsers-devel-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "url": "https://developer.download.nvidia.com/compute/cuda/repos/rhel8/x86_64/libnvonnxparsers-devel-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "size_bytes": 2469504,
+      "sha256": "0cd6424a7883b5271babdef4f6802e1e5f18e8a1cb2921ea0e44d622c0fad5b0",
+      "profile": "tensorrt-10.9.0.34-cuda12.8",
+      "license": "NVIDIA TensorRT license",
+      "package_architecture": "x86_64"
+    },
+    {
+      "component": "libnvonnxparsers10",
+      "version": "10.9.0.34",
+      "release": "1.cuda12.8",
+      "filename": "libnvonnxparsers10-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "url": "https://developer.download.nvidia.com/compute/cuda/repos/rhel8/x86_64/libnvonnxparsers10-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "size_bytes": 1504968,
+      "sha256": "3f0fe5554224220b4ec752ddac2a348cc026690113042cebef2fcb5db4f1f3af",
+      "profile": "tensorrt-10.9.0.34-cuda12.8",
+      "license": "NVIDIA TensorRT license",
+      "package_architecture": "x86_64"
+    },
+    {
+      "component": "python3-libnvinfer",
+      "version": "10.9.0.34",
+      "release": "1.cuda12.8",
+      "filename": "python3-libnvinfer-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "url": "https://developer.download.nvidia.com/compute/cuda/repos/rhel8/x86_64/python3-libnvinfer-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "size_bytes": 897328,
+      "sha256": "9028a30a3faf3829fa331ba2b2086d75df32cb68384cc3594da927a84b9b9778",
+      "profile": "tensorrt-10.9.0.34-cuda12.8",
+      "license": "NVIDIA TensorRT license",
+      "package_architecture": "x86_64"
+    },
+    {
+      "component": "python3-libnvinfer-devel",
+      "version": "10.9.0.34",
+      "release": "1.cuda12.8",
+      "filename": "python3-libnvinfer-devel-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "url": "https://developer.download.nvidia.com/compute/cuda/repos/rhel8/x86_64/python3-libnvinfer-devel-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "size_bytes": 9076,
+      "sha256": "5e2f32720d28f2be358309133446dae132dc7726db3d7e9ed0be74a772481f2e",
+      "profile": "tensorrt-10.9.0.34-cuda12.8",
+      "license": "NVIDIA TensorRT license",
+      "package_architecture": "x86_64"
+    },
+    {
+      "component": "python3-libnvinfer-dispatch",
+      "version": "10.9.0.34",
+      "release": "1.cuda12.8",
+      "filename": "python3-libnvinfer-dispatch-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "url": "https://developer.download.nvidia.com/compute/cuda/repos/rhel8/x86_64/python3-libnvinfer-dispatch-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "size_bytes": 589824,
+      "sha256": "9730d0a53211bf93cfa4b7df484230b35ba3659de2723dbf739a3920341da30e",
+      "profile": "tensorrt-10.9.0.34-cuda12.8",
+      "license": "NVIDIA TensorRT license",
+      "package_architecture": "x86_64"
+    },
+    {
+      "component": "python3-libnvinfer-lean",
+      "version": "10.9.0.34",
+      "release": "1.cuda12.8",
+      "filename": "python3-libnvinfer-lean-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "url": "https://developer.download.nvidia.com/compute/cuda/repos/rhel8/x86_64/python3-libnvinfer-lean-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "size_bytes": 589784,
+      "sha256": "95e9a553cc8060adf3bb83132faaf992b5ea53b7918f45a1d13bac6e7808d286",
+      "profile": "tensorrt-10.9.0.34-cuda12.8",
+      "license": "NVIDIA TensorRT license",
+      "package_architecture": "x86_64"
+    },
+    {
+      "component": "tensorrt",
+      "version": "10.9.0.34",
+      "release": "1.cuda12.8",
+      "filename": "tensorrt-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "url": "https://developer.download.nvidia.com/compute/cuda/repos/rhel8/x86_64/tensorrt-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "size_bytes": 11328,
+      "sha256": "e0058b7df55d8a0bed737bc9ef076cd7bd01b4b82b84269967136ff4db1e1464",
+      "profile": "tensorrt-10.9.0.34-cuda12.8",
+      "license": "NVIDIA TensorRT license",
+      "package_architecture": "x86_64"
+    },
+    {
+      "component": "tensorrt-devel",
+      "version": "10.9.0.34",
+      "release": "1.cuda12.8",
+      "filename": "tensorrt-devel-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "url": "https://developer.download.nvidia.com/compute/cuda/repos/rhel8/x86_64/tensorrt-devel-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "size_bytes": 8948,
+      "sha256": "4f1623d9e6ddd9c57ab48d1303a11fe57c83a600281bea539a21d99c6793b4cc",
+      "profile": "tensorrt-10.9.0.34-cuda12.8",
+      "license": "NVIDIA TensorRT license",
+      "package_architecture": "x86_64"
+    },
+    {
+      "component": "tensorrt-libs",
+      "version": "10.9.0.34",
+      "release": "1.cuda12.8",
+      "filename": "tensorrt-libs-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "url": "https://developer.download.nvidia.com/compute/cuda/repos/rhel8/x86_64/tensorrt-libs-10.9.0.34-1.cuda12.8.x86_64.rpm",
+      "size_bytes": 8828,
+      "sha256": "0279666d67c87f62bdd727d02bacb124ba80b05587025af9d3d0c2ca26550468",
+      "profile": "tensorrt-10.9.0.34-cuda12.8",
+      "license": "NVIDIA TensorRT license",
+      "package_architecture": "x86_64"
+    }
+  ],
+  "manual_components": [
+    {
+      "component": "MathWorks MATLAB, licensed toolboxes and support packages",
+      "status": "Requires entitled MathWorks offline media; not included in NVIDIA payload"
+    },
+    {
+      "component": "cuDNN GPU Coder standalone backend",
+      "status": "Needs Validation: MathWorks R2026a specifies8.9 but NVIDIA Blackwell native support begins9.7; do not substitute incompatible ABI"
+    },
+    {
+      "component": "TensorRT10.9 CUDA12.8",
+      "status": "23 exact NVIDIA RHEL8 RPM artifacts pinned; standalone SDK payload, not an OS dependency closure or the MathWorks registered TensorRT support package"
+    },
+    {
+      "component": "RHEL8 supported C/C++ host compiler",
+      "status": "Original driver bundle carries GCC/G++8.5.0-30.el8_10 and dependencies; native8.5 is within supported R2026a/R2024a/b ranges; target compiler selection/build acceptance pending"
+    }
+  ],
+  "limitations": [
+    "Payload verification is not a RHEL dependency closure or target execution test.",
+    "MATLAB R2024a/b lacks native Blackwell support; separate newer CUDA components do not change its bundled GPU engine.",
+    "No NVIDIA driver, kernel module, Fabric Manager or NVSwitch packages are included.",
+    "TensorRT RPM signatures and an offline RHEL package transaction are not verified by this SHA-256-only stager.",
+    "Vendor TensorRT standalone artifacts do not replace the MathWorks TensorRT support package installed by gpucoder.installTensorRT.",
+    "No MathWorks installers, licenses, support package payloads or pretrained models are included."
+  ],
+  "upstream_manifest_sha256": "bbf0798e9aabdd6887b429f0d1ff27412bca2ead081f898a18f0381cd8cb7359",
+  "tensorrt_repository_metadata": {
+    "source": "https://developer.download.nvidia.com/compute/cuda/repos/rhel8/x86_64/repodata/repomd.xml",
+    "primary_url": "https://developer.download.nvidia.com/compute/cuda/repos/rhel8/x86_64/repodata/b92878e9188021a026b263da05bc0387f11f0c9875ba19ec58432f07e9c6bd66-primary.xml.gz",
+    "filelists_url": "https://developer.download.nvidia.com/compute/cuda/repos/rhel8/x86_64/repodata/29f3877490c8b13c6ad2925e2d6b8d4e4cc0629f79501643146bba82f0ed694b-filelists.xml.gz",
+    "primary_compressed_sha256": "b92878e9188021a026b263da05bc0387f11f0c9875ba19ec58432f07e9c6bd66",
+    "filelists_compressed_sha256": "29f3877490c8b13c6ad2925e2d6b8d4e4cc0629f79501643146bba82f0ed694b"
+  },
+  "reference_versions": {
+    "R2026a": {
+      "cuda": "12.8.2",
+      "tensorrt": "10.9.0.34 cuda12.8",
+      "cudnn_external_requirement": "8.9: no native Blackwell vendor qualification; not downloaded or substituted"
+    },
+    "R2024a_R2024b": {
+      "cuda": "12.2",
+      "tensorrt": "8.6.1",
+      "cudnn": "8.9",
+      "status": "Legacy reference only; not staged as a supported Blackwell development profile"
+    }
+  }
+}
