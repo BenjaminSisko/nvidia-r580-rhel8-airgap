@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "record_kind": "alternative_xz_transport_same_driver_payload",
+  "documentation_base_source_commit": "84a3f7c",
+  "archive": {
+    "filename": "nvidia-r580-rhel8-driver-repo-20261030.tar.xz",
+    "bytes": 2024025344,
+    "sha256": "f6b127cbd58f0265f6f91978aa61096844007c8b1a7e4eb94c8801fa01503db5",
+    "format": "XZ",
+    "filter": "LZMA2",
+    "integrity_check": "CRC64"
+  },
+  "compression": {
+    "tool": "xz",
+    "options": [
+      "-T1",
+      "--memlimit-compress=1500MiB",
+      "--no-adjust",
+      "--check=crc64",
+      "--lzma2=preset=3,dict=128MiB,mode=fast,mf=hc4,nice=273,depth=48",
+      "-c"
+    ],
+    "dictionary_bytes": 134217728,
+    "estimated_decoder_memory_mib": 129
+  },
+  "original_gzip": {
+    "filename": "nvidia-r580-rhel8-driver-repo-20261030.tar.gz",
+    "bytes": 2632185106,
+    "sha256": "7c55e4f252661830ca917949bfda142ddbf7d4f5ade79235b4a09c3e1c1dc8e7",
+    "existing_release_transport": "two ordered byte parts, unchanged"
+  },
+  "original_gzip_decoded_tar": {
+    "bytes": 4628807680,
+    "sha256": "b3214b0109f825276f7cd9b6f90c0df390d7f6aebdbaf6f0ef0603c2ed104bac"
+  },
+  "xz_decoded_tar": {
+    "bytes": 4628807680,
+    "sha256": "b3214b0109f825276f7cd9b6f90c0df390d7f6aebdbaf6f0ef0603c2ed104bac"
+  },
+  "verification": {
+    "verified_complete": true,
+    "fits_github_single_asset": true,
+    "github_single_asset_limit_bytes_exclusive": 2147483648,
+    "decoded_tar_length_and_sha256_equal": true,
+    "source_verified_utc": "2026-11-02T23:09:28.383159+00:00",
+    "finished_utc": "2026-11-02T23:26:13.925802+00:00"
+  },
+  "release": {
+    "repository": "https://github.com/BenjaminSisko/nvidia-r580-rhel8-airgap",
+    "tag": "v2026.10.30-r580.196.07",
+    "url": "https://github.com/BenjaminSisko/nvidia-r580-rhel8-airgap/releases/tag/v2026.10.30-r580.196.07",
+    "additional_asset_names": [
+      "nvidia-r580-rhel8-driver-repo-20261030.tar.xz",
+      "nvidia-r580-rhel8-driver-repo-20261030.tar.xz.sha256",
+      "XZ-TRANSPORT-RECORD.json",
+      "SINGLE-FILE-DOWNLOAD.md"
+    ],
+    "original_ten_assets_modified": false
+  },
+  "payload": {
+    "driver": "580.196.07",
+    "kernel_module": "open",
+    "build": "DKMS",
+    "rpm_count": 617,
+    "nvidia_rpms": 23,
+    "os_epel_rpms": 594,
+    "stock_kernel_development_header_pairs": 104,
+    "inner_checksum_count": 654
+  },
+  "limitations": [
+    "Transport verification is not target installation or GPU testing.",
+    "Target kernel, GPU edition/count and Secure Boot remain unknown.",
+    "No new MATLAB, DKMS, Secure Boot or workload proof is claimed.",
+    "The separate CUDA/TensorRT supplement is not inside this driver payload.",
+    "This record establishes local transport verification, not a GitHub upload receipt."
+  ]
+}

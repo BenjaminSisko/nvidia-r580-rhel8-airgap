@@ -56,10 +56,15 @@ Archive SHA-256:
 7c55e4f252661830ca917949bfda142ddbf7d4f5ade79235b4a09c3e1c1dc8e7
 ```
 
-The release distributes the archive as two ordered byte parts plus checksum,
-reassembly, manifest and operator-guide assets. Follow
-[GITHUB-DOWNLOAD.md](GITHUB-DOWNLOAD.md); GitHub's automatic source ZIP/TAR is
-source tooling, not the complete RPM kit. The extracted `repo-bundle/` contains:
+The original gzip remains two ordered byte parts. The preferred newer
+transport is one `nvidia-r580-rhel8-driver-repo-20261030.tar.xz` file (**2,024,025,344 bytes**), SHA-256
+`f6b127cbd58f0265f6f91978aa61096844007c8b1a7e4eb94c8801fa01503db5`. Both decode to the exact same tar: **4,628,807,680 bytes**, SHA-256
+`b3214b0109f825276f7cd9b6f90c0df390d7f6aebdbaf6f0ef0603c2ed104bac`. No payload files or kernel alternatives were changed.
+Read [SINGLE-FILE-DOWNLOAD.md](SINGLE-FILE-DOWNLOAD.md) for quick extraction and
+[GITHUB-DOWNLOAD.md](GITHUB-DOWNLOAD.md) for the retained original-gzip fallback.
+The XZ file/sidecar/record/guide are four added assets; all original ten remain
+unchanged. GitHub's automatic source ZIP/TAR contains source tooling rather than
+the binary kit. The extracted `repo-bundle/` contains:
 
 - `drivers/`: signed EL8 NVIDIA driver/support RPMs and NVIDIA module metadata.
 - `os-deps/`: signed OS/EPEL driver runtime/build dependencies and kernel alternatives.

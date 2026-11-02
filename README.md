@@ -53,12 +53,13 @@ support matrix.
 A completed local bundle was built and independently checked on October 30,
 2026. It contains **104 exact stock RHEL 8.10 kernel development/header pairs**,
 NVIDIA **580.196.07**, and the complete tested driver/build/runtime dependency
-set. The 2.63 GB archive and its SHA-256 are recorded in the
-[verified build receipt](docs/BUILD-RECORD-20261030.md). Download the complete
-kit from the [GitHub release](https://github.com/BenjaminSisko/nvidia-r580-rhel8-airgap/releases/tag/v2026.10.30-r580.196.07)
-and follow [the download/reassembly guide](docs/GITHUB-DOWNLOAD.md). The archive
-is split into two release assets to fit GitHub's per-file limit. No production
-repository service or GPU target was changed by publication.
+set. The preferred complete transport is now one **2,024,025,344-byte XZ file**:
+[download the full kit](https://github.com/BenjaminSisko/nvidia-r580-rhel8-airgap/releases/download/v2026.10.30-r580.196.07/nvidia-r580-rhel8-driver-repo-20261030.tar.xz) and follow
+[verify/extract instructions](docs/SINGLE-FILE-DOWNLOAD.md). It decodes to the
+exact original tar stream, preserving all payload files. The original 2.63 GB
+gzip remains available as two parts. See the [original build receipt](docs/BUILD-RECORD-20261030.md)
+and [all download options](docs/GITHUB-DOWNLOAD.md). No production repository
+service or GPU target was changed by publication.
 
 The target kernel remains unknown. Coverage is bounded by the exact signed
 pairs available in the entitled repositories at build time; it does not cover
@@ -132,25 +133,42 @@ R2026a provides native Blackwell support. Optional R2024a/b workflows remain
 conditional on forward compatibility and numerical validation. The R2026a GPU
 Coder external cuDNN 8.9 requirement has a support gap on Blackwell; the guide
 records it explicitly instead of substituting an incompatible cuDNN ABI.
-The completed October 30 driver archive and release remain unchanged.
+The October 30 driver payload and original gzip assets remain unchanged;
+the optional XZ transport changes only compression.
 
 ## Download the prepared kit
 
-The release contains the complete 617-RPM kit and all 104 exact kernel
-development/header pairs. Download all release assets, then run the supplied
-helper on Linux or macOS:
+[Download the single complete XZ archive](https://github.com/BenjaminSisko/nvidia-r580-rhel8-airgap/releases/download/v2026.10.30-r580.196.07/nvidia-r580-rhel8-driver-repo-20261030.tar.xz), then verify and
+extract on Linux:
+
+```bash
+printf '%s  %s\n' \
+  'f6b127cbd58f0265f6f91978aa61096844007c8b1a7e4eb94c8801fa01503db5' \
+  'nvidia-r580-rhel8-driver-repo-20261030.tar.xz' | sha256sum -c -
+tar -xJf nvidia-r580-rhel8-driver-repo-20261030.tar.xz
+(cd repo-bundle && sha256sum -c SHA256SUMS)
+```
+
+Or use GitHub CLI for only the XZ archive and its small checksum sidecar:
 
 ```bash
 gh release download v2026.10.30-r580.196.07 \
   --repo BenjaminSisko/nvidia-r580-rhel8-airgap \
-  --dir nvidia-rhel8-download
-cd nvidia-rhel8-download
-bash reassemble-release.sh
+  --dir nvidia-rhel8-xz-download \
+  --pattern nvidia-r580-rhel8-driver-repo-20261030.tar.xz \
+  --pattern nvidia-r580-rhel8-driver-repo-20261030.tar.xz.sha256
+cd nvidia-rhel8-xz-download
+sha256sum -c nvidia-r580-rhel8-driver-repo-20261030.tar.xz.sha256
+tar -xJf nvidia-r580-rhel8-driver-repo-20261030.tar.xz
+(cd repo-bundle && sha256sum -c SHA256SUMS)
 ```
 
-See [the full download guide](docs/GITHUB-DOWNLOAD.md) for manual reassembly
-and inner checksums. The automatically generated GitHub source ZIP/TAR
-contains tooling; the release assets contain the binary offline kit.
+The release still retains the original gzip's two-part transport unchanged,
+SHA-256 `7c55e4f252661830ca917949bfda142ddbf7d4f5ade79235b4a09c3e1c1dc8e7`.
+See [the download guide](docs/GITHUB-DOWNLOAD.md) for that fallback and macOS
+checksum commands, and [the XZ transport record](docs/XZ-TRANSPORT-RECORD-20261102.json)
+for exact decoded-tar identity. GitHub's automatic source ZIP/TAR contains
+source tooling; the release payload contains all 617 RPMs and 104 exact pairs.
 
 ## Check upstream metadata
 

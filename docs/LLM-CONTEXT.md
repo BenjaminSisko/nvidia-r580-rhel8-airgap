@@ -16,8 +16,12 @@ when it conflicts with prose. State disagreements and unknowns explicitly.
 
 This repository ports the earlier RHEL 9 tooling. The verified October 30
 RHEL 8.10 release carries 104 exact development/header alternatives and 617
-signed RPMs. Its complete archive is split into two GitHub Release assets;
-follow `GITHUB-DOWNLOAD.md` and verify the pinned reconstructed archive hash.
+signed RPMs. Its original gzip remains two ordered GitHub Release parts;
+the preferred newer `nvidia-r580-rhel8-driver-repo-20261030.tar.xz` is one complete **2,024,025,344-byte** asset,
+SHA-256 `f6b127cbd58f0265f6f91978aa61096844007c8b1a7e4eb94c8801fa01503db5`. Its decoded tar length/SHA match the original tar exactly;
+no RPMs, kernel alternatives or payload files were removed or regenerated.
+Follow `SINGLE-FILE-DOWNLOAD.md` for XZ or `GITHUB-DOWNLOAD.md` for both paths;
+all original ten release assets remain unchanged.
 The target kernel is unknown; discover it at the site and require its exact
 carried development package. The actual release passed paired-only dependency
 and RPM transaction tests for the latest carried kernel pair. Other kernels'
