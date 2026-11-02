@@ -6,6 +6,23 @@ using NVIDIA's **EL8** RPMs, RHEL 8 dependencies, and EPEL 8. The original
 `BenjaminSisko/nvidia-r580-rhel9-airgap` repository at commit `4d492b8` remains
 unchanged; this repository contains the separate RHEL 8 adaptation.
 
+## Start here with an LLM
+
+Give the assistant [the complete handoff](docs/LLM-HANDOFF.md). Repository-aware
+agents also start from [AGENTS.md](AGENTS.md). The handoff inventories both
+deliveries, their exact verification evidence, the files still needed from
+MathWorks, and the remaining on-site checks. A copy-and-paste starting prompt:
+
+```text
+Read AGENTS.md and docs/LLM-HANDOFF.md in this repository. Explain exactly what
+has been prepared for the RHEL 8.10 RTX PRO 6000 Blackwell system, distinguishing
+the published driver kit from the separate CUDA/TensorRT MATLAB supplement.
+Use the recorded manifests and receipts for exact versions, counts and hashes.
+Tell me what remains missing or unverified, then guide me through the next step
+using actual target evidence. Do not assume the kernel, GPU count, Secure Boot,
+MATLAB installation, toolbox licenses, or successful GPU execution.
+```
+
 | Item | Selection or evidence needed |
 |---|---|
 | Target OS | RHEL 8.10 x86_64 |
@@ -101,6 +118,9 @@ download size; extraction and MATLAB media require additional space.
 See the [MATLAB offline guide](docs/MATLAB-OFFLINE.md),
 [pinned NVIDIA manifest](docs/MATLAB-NVIDIA-ASSETS.json), and
 [MATLAB readiness script](scripts/matlab_readiness.m).
+The [public preparation record](docs/MATLAB-PREPARATION-RECORD-20261102.json)
+records what was actually verified. The [payload checksum list](docs/MATLAB-PAYLOAD-SHA256SUMS)
+can verify the downloaded supplement using standard checksum tools offline.
 
 Normal MATLAB GPU calculations and CUDA MEX use MATLAB's supplied CUDA
 components. This external supplement serves standalone development and custom

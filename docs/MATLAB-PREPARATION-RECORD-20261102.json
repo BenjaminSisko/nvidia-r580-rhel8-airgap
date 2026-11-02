@@ -1,0 +1,106 @@
+{
+  "schema_version": 1,
+  "record_type": "public_sanitized_preparation_snapshot",
+  "prepared_utc": "2026-11-02T14:20:07.724111+00:00",
+  "vendor_file_verification_utc": "2026-11-02T14:18:22.572271+00:00",
+  "preparation_source_commit": "4b36e03eb461e733dadcda08cb20ff07622117a0",
+  "repository": "https://github.com/BenjaminSisko/nvidia-r580-rhel8-airgap",
+  "target": {
+    "os": "RHEL 8.10",
+    "architecture": "x86_64",
+    "gpu_family": "NVIDIA RTX PRO 6000 Blackwell",
+    "matlab_primary": "R2026a",
+    "optional_legacy": [
+      "R2024a",
+      "R2024b"
+    ],
+    "kernel": null,
+    "gpu_edition": null,
+    "gpu_count": null,
+    "secure_boot": null,
+    "installed_matlab_products": "Unknown until target inspection"
+  },
+  "nvidia_supplement": {
+    "delivery_format": "Separate local folder; no transport archive or GitHub binary release",
+    "asset_count": 56,
+    "payload_bytes": 9317457352,
+    "profiles": [
+      {
+        "name": "cuda-12.8.2",
+        "file_count": 33,
+        "bytes": 4253511164
+      },
+      {
+        "name": "tensorrt-10.9.0.34-cuda12.8",
+        "file_count": 23,
+        "bytes": 5063946188
+      }
+    ],
+    "asset_manifest": "MATLAB-NVIDIA-ASSETS.json",
+    "asset_manifest_sha256": "15760562a4689caf3247ee99712062eb79dcef4ad6364d020e39619ed28a355b",
+    "payload_checksum_file": "MATLAB-PAYLOAD-SHA256SUMS",
+    "payload_checksum_file_sha256": "7eb9cab01eba7935705bbb1c8db3aa19f525d5df4122ce60f490cb0b84d1d90e",
+    "all_vendor_sizes_and_sha256_verified": true,
+    "rpm_signatures_verified": false,
+    "rhel_dependency_closure_verified": false,
+    "installed_on_target": false,
+    "matlab_execution_verified": false,
+    "matlab_diagnostic_executed": false
+  },
+  "original_driver_kit": {
+    "tag": "v2026.10.30-r580.196.07",
+    "release_url": "https://github.com/BenjaminSisko/nvidia-r580-rhel8-airgap/releases/tag/v2026.10.30-r580.196.07",
+    "archive": "nvidia-r580-rhel8-driver-repo-20261030.tar.gz",
+    "archive_bytes": 2632185106,
+    "archive_sha256": "7c55e4f252661830ca917949bfda142ddbf7d4f5ade79235b4a09c3e1c1dc8e7",
+    "archive_rechecked_utc": "2026-11-02T14:18:24.443893+00:00",
+    "preserved": true,
+    "driver_version": "580.196.07",
+    "module_flavor": "open DKMS",
+    "rpm_count": 617,
+    "nvidia_rpm_count": 23,
+    "rhel_epel_rpm_count": 594,
+    "exact_stock_kernel_development_header_pairs": 104,
+    "kernel_range": [
+      "4.18.0-553.el8_10.x86_64",
+      "4.18.0-553.180.1.el8_10.x86_64"
+    ],
+    "inner_file_checksum_count": 654,
+    "offline_transaction_package_count": 410,
+    "offline_transaction_kernel": "4.18.0-553.180.1.el8_10.x86_64",
+    "target_dkms_or_gpu_acceptance": false
+  },
+  "source_checks": {
+    "test_count_at_preparation": 44,
+    "ci_run": "https://github.com/BenjaminSisko/nvidia-r580-rhel8-airgap/actions/runs/41460883789",
+    "ci_source_commit": "4b36e03eb461e733dadcda08cb20ff07622117a0",
+    "ci_conclusion": "success",
+    "python_versions": [
+      "3.9",
+      "3.11",
+      "3.13"
+    ],
+    "secret_scan": "passed"
+  },
+  "missing_mathworks_media": [
+    "Release-specific Linux installers and product updates",
+    "Licensed toolboxes and offline activation/license material",
+    "GPU Coder Interface for Deep Learning support package where required",
+    "MathWorks TensorRT integration package for MEX/simulation where required",
+    "Project-specific model/importer/data/Python dependencies"
+  ],
+  "compatibility_limits": {
+    "all_toolboxes_was_a_planning_assumption": true,
+    "all_toolboxes_or_workloads_validated": false,
+    "r2026a_native_blackwell_documented": true,
+    "r2024_native_blackwell": false,
+    "r2024_external_reference_only": {
+      "cuda": "12.2",
+      "cudnn": "8.9",
+      "tensorrt": "8.6.1",
+      "downloaded_for_blackwell": false
+    },
+    "external_cudnn_backend": "Unresolved: MathWorks R2026a GPU Coder lists cuDNN 8.9; NVIDIA native Blackwell support begins with 9.7. No substitute installed or accepted."
+  },
+  "privacy": "Private staging paths, host inventory, credentials, license material and private build evidence are excluded from this public snapshot."
+}

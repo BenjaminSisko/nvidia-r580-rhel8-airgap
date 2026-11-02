@@ -1,5 +1,11 @@
 # Offline assistant context: RHEL 8.10 NVIDIA R580 air-gap workflow
 
+For the complete current inventory, including the separate MATLAB development
+supplement, read [LLM-HANDOFF.md](LLM-HANDOFF.md) first. This file describes the
+driver workflow in detail. Copies sealed inside the October 30 archive retain
+their historical prose; use the current handoff and actual artifact receipts
+to resolve preparation-status differences without changing that archive.
+
 ## Task and present state
 
 Help an operator prepare, verify, transfer, import, install, and diagnose an
@@ -61,10 +67,13 @@ later. The supported GPU list includes Workstation, Max-Q Workstation, and
 Server editions of RTX PRO 6000 Blackwell. Hardware inclusion and the Server
 Edition OS table are distinct evidence; confirm the actual installed variant.
 
-The intended application and version are unconfirmed. Do not carry over MATLAB
-2026 guarantees from the earlier RHEL 9 deployment. Driver OS support and an
-application's OS support are separate checks. Do not install CUDA Toolkit,
-cuDNN, TensorRT, MATLAB, or other workloads within this driver-only scope.
+The intended application is now MATLAB R2026a, with possible R2024a/b use and
+all applicable Linux toolbox workflows considered during preparation. This
+does not establish installed products, licenses or workload acceptance. The
+November 2 CUDA/TensorRT supplement is separate from the immutable driver kit;
+read `MATLAB-OFFLINE.md` and its preparation record before planning those
+workflows. Keep the driver installer limited to its verified driver scope.
+Driver OS support and application support remain distinct checks.
 
 ## Broad coverage and the exact kernel rule
 
@@ -141,10 +150,14 @@ for a reviewed union of 23 NVIDIA and 594 Red Hat/EPEL RPMs (617 total). A fresh
 empty installroot with only two generated local repositories resolved the full
 pinned driver, toolchain (`gcc`, `gcc-c++`, `python36`, DKMS) and latest carried
 `4.18.0-553.180.1.el8_10.x86_64` pair: 410 packages, approximately 666 MiB.
-The intentional `--assumeno` abort left zero RPMs installed. The final automated
-artifact must still include its own passing `OFFLINE_INSTALL_PREVIEW.txt` and
-final manifest/signature/hash checks; no archive completion is asserted here. File counts, valid signatures and a passing seed/toolchain query
-are insufficient.
+The intentional `--assumeno` abort left zero RPMs installed. The completed
+October 30 artifact contains its passing `OFFLINE_INSTALL_PREVIEW.txt`, final
+manifest and signature/hash checks. A separate RPM transaction test passed
+signing-key/signature and file-conflict checks with zero application RPMs
+installed. The final archive SHA-256 and all 654 inner file checksums passed
+after transfer; see `BUILD-RECORD-20261030.md`. These completed preparation
+checks do not prove target DKMS, Secure Boot or GPU operation. File counts,
+valid signatures and a seed/toolchain query alone would be insufficient.
 
 Required acceptance is a fresh empty-installroot solve using only final
 `drivers/` and `os-deps/`, all selected driver packages, `gcc`, `gcc-c++`, `make`,
